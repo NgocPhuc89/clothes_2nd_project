@@ -1,4 +1,4 @@
-package com.example.clothes_2nd.dto.response;
+package com.example.clothes_2nd.dto.response.home;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CategoryListResponse {
+public class FileListByProductIdResponse {
     private Long id;
-    private String name;
+
 }
