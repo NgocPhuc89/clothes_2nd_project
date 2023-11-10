@@ -19,6 +19,7 @@ public class Category {
     @ManyToOne
     private Category categoryParent;
 
+
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Product> products;
 
