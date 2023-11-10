@@ -1,6 +1,7 @@
 package com.example.clothes_2nd.model;
 
 import com.example.clothes_2nd.model.emun.Size;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,15 +28,18 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @JsonIgnore
     private Category category;
 
     @ManyToOne
     @JoinColumn(name = "id_userInfo")
+    @JsonIgnore
     private UserInfo userInfo;
 
     @Enumerated(EnumType.STRING)
     private Size size;
 
     @OneToMany(mappedBy = "product" , cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<CartDetail> cardDetail;
 }

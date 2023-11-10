@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
+
+        import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,6 +16,12 @@ import java.math.BigDecimal;
 public class ProductListResponse {
     private Long id;
     private String name;
+    private String description;
     private BigDecimal price;
     private File image;
+    private String imgUrl;
+    private String category;
+    private String size;
+    private String status;
+
 }

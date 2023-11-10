@@ -13,4 +13,5 @@ import lombok.Setter;
 public class FileSaveRequest {
     private String url;
     private FileType fileType;
+    private String publicId;
 }
