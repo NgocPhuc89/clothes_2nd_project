@@ -1,27 +1,22 @@
-package com.example.clothes_2nd.dto.response;
+package com.example.clothes_2nd.dto.response.home;
 
 import com.example.clothes_2nd.model.File;
+import com.example.clothes_2nd.model.emun.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-        import java.math.BigDecimal;
+import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class ProductListResponse {
+public class ProductOfHomeListResponse {
     private Long id;
     private String name;
-    private String description;
     private BigDecimal price;
-    private File image;
-    private String imgUrl;
-    private String category;
-    private String size;
-    private String status;
-
+    private Size size;
+    private String imageUrl;
 }

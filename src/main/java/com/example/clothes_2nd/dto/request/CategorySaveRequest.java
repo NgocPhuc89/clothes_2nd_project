@@ -1,6 +1,6 @@
 package com.example.clothes_2nd.dto.request;
 
-import com.example.clothes_2nd.model.emun.FileType;
+import com.example.clothes_2nd.model.Category;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class FileSaveRequest {
-    private String url;
-    private FileType fileType;
-    private String publicId;
+public class CategorySaveRequest {
+    private Long id;
+    private String name;
+    private Category categoryParentId;
 }

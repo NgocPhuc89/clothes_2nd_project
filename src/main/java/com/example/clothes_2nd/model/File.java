@@ -15,12 +15,18 @@ public class File {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String url;
+    @Column(name = "file_name")
+    private String fileName;
+    @Column(name = "file_folder")
+    private String fileFolder;
 
     @Enumerated(EnumType.STRING)
     private FileType fileType;
-
+    @Column(name = "cloud_id")
+    private String cloudId;
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+    private String publicId;
 
 }

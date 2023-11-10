@@ -5,11 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-public class CategoryListResponse {
+@AllArgsConstructor
+@NoArgsConstructor
+public class FileResponse {
     private Long id;
-    private String name;
+    private String url;
 }

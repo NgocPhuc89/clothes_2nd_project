@@ -1,7 +1,7 @@
 package com.example.clothes_2nd.service.user;
 
 import com.example.clothes_2nd.model.LocationRegion;
-import com.example.clothes_2nd.repository.UserLocationRepository;
+import com.example.clothes_2nd.repository.LocationRegionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +15,7 @@ import java.util.Optional;
 public class UserLocationServiceImpl implements IUserLocationService {
 
     @Autowired
-    private UserLocationRepository userLocationRepository;
+    private LocationRegionRepository userLocationRepository;
 
 
     @Override

@@ -5,8 +5,8 @@ import com.example.clothes_2nd.model.File;
 import com.example.clothes_2nd.model.LocationRegion;
 import com.example.clothes_2nd.model.User;
 import com.example.clothes_2nd.model.UserInfo;
+import com.example.clothes_2nd.repository.LocationRegionRepository;
 import com.example.clothes_2nd.repository.UserInfoRepository;
-import com.example.clothes_2nd.repository.UserLocationRepository;
 import com.example.clothes_2nd.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class UserInfoService implements IUserInfoService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private UserLocationRepository userLocationRepository;
+    private LocationRegionRepository userLocationRepository;
 
     @Override
     public List<UserInfo> findAll() {

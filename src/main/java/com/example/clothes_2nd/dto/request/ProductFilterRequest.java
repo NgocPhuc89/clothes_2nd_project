@@ -1,6 +1,6 @@
 package com.example.clothes_2nd.dto.request;
 
-import com.example.clothes_2nd.model.LocationRegion;
+import com.example.clothes_2nd.model.emun.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +12,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CartSaveRequest {
-    private String name;
-    private BigDecimal totalPrice;
-    private String status;
-    private String phone;
-    private LocationRegion locationRegion;
+public class ProductFilterRequest {
+    private Size size;
+    private BigDecimal priceMin;
+    private BigDecimal priceMax;
+    private Long categoryId;
+    private String search = "";
 }

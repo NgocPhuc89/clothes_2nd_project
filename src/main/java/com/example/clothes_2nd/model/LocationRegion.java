@@ -12,7 +12,9 @@ import lombok.experimental.Accessors;
 @Setter
 @Table(name = "location_gion")
 @Accessors(chain = true)
-public class LocationRegion {
+
+public class LocationRegion extends LocationRegionSaveRequest {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,6 +24,7 @@ public class LocationRegion {
     private String districtName;
     private String wardId;
     private String wardName;
+    private String address;
     @ManyToOne
     @JoinColumn(name = "userInfo_id")
     private UserInfo userInfo;
