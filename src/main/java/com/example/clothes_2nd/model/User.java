@@ -4,7 +4,7 @@ import com.example.clothes_2nd.model.emun.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
+
 
 @Entity
 @AllArgsConstructor
@@ -17,10 +17,8 @@ public class User {
     private Long id ;
     private String username;
     private String password;
-
     @Enumerated(EnumType.STRING)
     private Role role;
-
     @OneToOne
     private File avatar;
 }

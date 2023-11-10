@@ -1,31 +1,23 @@
-package com.example.clothes_2nd.dto.request;
+package com.example.clothes_2nd.dto.response;
 
-import com.example.clothes_2nd.model.LocationRegion;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserInfoSaveRequest {
-    private String username;
-
-    private String password;
-
-    private String avatarId;
-
-    private String fullName;
-    private String email;
-    private String phone;
-    private String gender;
-
+@Accessors
+public class UserInfoSaveResponse {
+    private Long id;
     private String provinceId;
     private String provinceName;
     private String districtId;
     private String districtName;
     private String wardId;
     private String wardName;
+
 }
