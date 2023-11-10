@@ -1,6 +1,6 @@
 package com.example.clothes_2nd.model;
 
-import com.example.clothes_2nd.dto.request.LocationRegionSaveRequest;
+import com.example.clothes_2nd.service.admin.location.request.LocationRegionSaveRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
