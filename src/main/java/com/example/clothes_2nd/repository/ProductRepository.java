@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
@@ -32,6 +34,8 @@ Page<Product> filterProduct(@Param("request") ProductFilterRequest request, Page
 
     @Query(value = "SELECT p FROM Product p WHERE " +
             "(p.name like :search or " +
+           " p.status like :search or " +
+            " p.description like :search or " +
             "p.category.name like :search)")
 //
     Page<Product> searchEverything(String search, Pageable pageable);

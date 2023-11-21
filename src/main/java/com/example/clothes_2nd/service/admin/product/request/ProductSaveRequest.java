@@ -1,5 +1,6 @@
 package com.example.clothes_2nd.service.admin.product.request;
 
+import com.example.clothes_2nd.model.File;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,6 @@ public class ProductSaveRequest {
     private BigDecimal price;
     private String status;
     private String size;
-    private SelectOptionRequest categories;
-    private List<SelectOptionRequest> images;
+    private SelectOptionRequest category;
+    private List<File> files;
 }

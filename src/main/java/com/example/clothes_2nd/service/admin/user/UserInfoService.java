@@ -50,8 +50,10 @@ public class UserInfoService implements IUserInfoService {
         User user = new User();
         user.setUsername(userInfoSaveRequest.getUsername());
         user.setPassword(userInfoSaveRequest.getPassword());
+
         user.setAvatar(File.builder().id(Long.valueOf(userInfoSaveRequest.getAvatarId())).build());
         user.setRole(Role.ROLE_USER);
+
         userRepository.save(user);
 
         UserInfo userInfo = new UserInfo();
