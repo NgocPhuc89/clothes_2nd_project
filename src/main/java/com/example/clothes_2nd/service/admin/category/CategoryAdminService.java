@@ -3,7 +3,7 @@ package com.example.clothes_2nd.service.admin.category;
 import com.example.clothes_2nd.model.Category;
 import com.example.clothes_2nd.repository.CategoryRepository;
 import com.example.clothes_2nd.service.admin.category.response.CategoryAdminListResponse;
-import com.example.clothes_2nd.util.AppUntil;
+import com.example.clothes_2nd.util.AppUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +18,14 @@ public class CategoryAdminService {
 
     public List<CategoryAdminListResponse> getAllCategories() {
 
-        return categoryRepository.findAllByCategoryParentIsNull().stream().map(e -> AppUntil.mapper.map(e,CategoryAdminListResponse.class)).collect(Collectors.toList());
+        return categoryRepository.findAllByCategoryParentIsNull().stream().map(e -> AppUtil.mapper.map(e,CategoryAdminListResponse.class)).collect(Collectors.toList());
     }
 
     public List<CategoryAdminListResponse> getSubcategories(Long id) {
-        return categoryRepository.findByCategoryParentId(id).stream().map(e -> AppUntil.mapper.map(e,CategoryAdminListResponse.class)).collect(Collectors.toList());
+        return categoryRepository.findByCategoryParentId(id).stream().map(e -> AppUtil.mapper.map(e,CategoryAdminListResponse.class)).collect(Collectors.toList());
     }
 
     public List<CategoryAdminListResponse> getNestedCategories(Long id) {
-        return categoryRepository.findNestedCategoriesByParentId(id).stream().map(e -> AppUntil.mapper.map(e,CategoryAdminListResponse.class)).collect(Collectors.toList());
+        return categoryRepository.findNestedCategoriesByParentId(id).stream().map(e -> AppUtil.mapper.map(e,CategoryAdminListResponse.class)).collect(Collectors.toList());
     }
 }
