@@ -10,10 +10,9 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "location_gion")
 @Accessors(chain = true)
 
-public class LocationRegion extends LocationRegionSaveRequest {
+public class LocationRegion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +27,5 @@ public class LocationRegion extends LocationRegionSaveRequest {
     @ManyToOne
     @JoinColumn(name = "userInfo_id")
     private UserInfo userInfo;
-
 
 }

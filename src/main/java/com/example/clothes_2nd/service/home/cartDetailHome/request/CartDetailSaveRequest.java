@@ -1,5 +1,6 @@
-package com.example.clothes_2nd.service.home.cartHome.response;
+package com.example.clothes_2nd.service.home.cartDetailHome.request;
 
+import com.example.clothes_2nd.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,11 +12,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CartDetailHomeResponse {
+public class CartDetailSaveRequest {
     private Long id;
-    private String name;
-    private BigDecimal price;
-    private BigDecimal total;
     private Long quantity;
-    private String imageUrl;
 }

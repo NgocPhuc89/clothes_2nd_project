@@ -18,11 +18,14 @@ public class Cart {
     private Long id;
     private String name;
     private BigDecimal totalPrice;
-    private LocalDate orderDate;
-    private String status;
+    private LocalDate orderDate = LocalDate.now();
     private String phone;
     private BigDecimal shippingFee;
-    @OneToOne
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Status status;
+
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "locationRegion")
     private LocationRegion locationRegion;
 

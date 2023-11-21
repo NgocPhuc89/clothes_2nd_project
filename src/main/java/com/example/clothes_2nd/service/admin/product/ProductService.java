@@ -2,7 +2,7 @@ package com.example.clothes_2nd.service.admin.product;
 
 import com.example.clothes_2nd.service.admin.product.response.ProductListResponse;
 import com.example.clothes_2nd.repository.ProductRepository;
-import com.example.clothes_2nd.util.AppUntil;
+import com.example.clothes_2nd.util.AppUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +19,7 @@ public class ProductService {
         return productRepository
                 .searchEverything(search, pageable)
                 .map(product -> {
-                    var response = AppUntil.mapper.map(product, ProductListResponse.class);
+                    var response = AppUtil.mapper.map(product, ProductListResponse.class);
                     response.setCategory(product.getCategory().getName());
                     return response;
                 });

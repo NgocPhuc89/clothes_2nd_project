@@ -14,7 +14,7 @@ import java.util.Optional;
 @CrossOrigin
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/home/product")
+@RequestMapping("/api/home/products")
 public class ProductHomeRestController {
     private ProductHomeService productHomeService;
 

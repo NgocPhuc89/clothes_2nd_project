@@ -8,7 +8,7 @@ import org.modelmapper.convention.MatchingStrategies;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class AppUntil {
+public class AppUtil {
     public static final ModelMapper mapper;
     static {
         mapper = new ModelMapper();
