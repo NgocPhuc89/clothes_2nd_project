@@ -7,15 +7,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class ProductFilterRequest {
-    private Size size;
+    private String size;
     private BigDecimal priceMin;
     private BigDecimal priceMax;
     private Long categoryId;
     private String search = "";
+
+    private List<Size> sizes;
 }

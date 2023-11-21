@@ -21,7 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 //    )
 //    Page<Product> filterProduct(ProductFilterRequest request, Pageable pageable);
 @Query(value = "SELECT p FROM Product p WHERE " +
-        "(COALESCE(:#{#request.size}, p.size) = p.size) " +
+        "(:#{#request.sizes} is null or  p.size in :#{#request.sizes}) " +
         "AND (COALESCE(:#{#request.categoryId}, p.category.id) = p.category.id) " +
         "AND (COALESCE(:#{#request.priceMin}, p.price) <= p.price) " +
         "AND (COALESCE(:#{#request.priceMax}, p.price) >= p.price) " +
