@@ -21,4 +21,9 @@ public class User {
     private Role role;
     @OneToOne
     private File avatar;
+
+
+    public UserInfo getUserInfo() {
+        return null;
+    }
 }

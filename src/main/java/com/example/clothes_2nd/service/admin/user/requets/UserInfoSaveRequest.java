@@ -28,4 +28,22 @@ public class UserInfoSaveRequest {
     private String districtName;
     private String wardId;
     private String wardName;
+    private String address;
+
+    public UserInfoSaveRequest(String username, String password, Long avatarId, String fullName, String email, String phone, String gender, String provinceId, String provinceName, String districtId, String districtName, String wardId, String wardName, String address) {
+        this.username = username;
+        this.password = password;
+        this.avatarId = String.valueOf(avatarId);
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.gender = gender;
+        this.provinceId = provinceId;
+        this.provinceName = provinceName;
+        this.districtId = districtId;
+        this.districtName = districtName;
+        this.wardId = wardId;
+        this.wardName = wardName;
+        this.address = address;
+    }
 }

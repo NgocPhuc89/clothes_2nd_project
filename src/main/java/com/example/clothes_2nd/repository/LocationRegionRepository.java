@@ -6,5 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LocationRegionRepository extends JpaRepository<LocationRegion, Long> {
+    LocationRegion getLocationRegionByUserInfoId(Long id);
 
+    void deleteByUserInfoId(Long id);
 }
