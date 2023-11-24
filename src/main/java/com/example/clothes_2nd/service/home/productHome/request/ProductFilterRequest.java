@@ -19,6 +19,5 @@ public class ProductFilterRequest {
     private BigDecimal priceMax;
     private Long categoryId;
     private String search = "";
-
     private List<Size> sizes;
 }

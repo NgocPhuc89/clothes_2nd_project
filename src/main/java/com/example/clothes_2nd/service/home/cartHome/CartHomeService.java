@@ -57,6 +57,7 @@ public class CartHomeService {
     }
 
     public Cart addToCart(CartDetailSaveRequest request) {
+<<<<<<< Updated upstream
         var product = productRepository.findById(request.getId());
         var userInfo = userInfoRepository.findById(1L);
         CartDetail cartDetail = new CartDetail();
@@ -64,6 +65,13 @@ public class CartHomeService {
         cartDetail.setQuantity(1L);
         cartDetail.setPrice(product.orElseThrow().getPrice());
         cartDetail.setTotal(cartDetail.getPrice());
+=======
+        Optional<Product> productById = productRepository.findById(request.getId());
+        Optional<Cart> cartById = cartRepository.findById(1L);
+        Optional<UserInfo> userInfoById = userInfoRepository.findById(1L);
+        Optional<Status> statusById = statusRepository.findById(1L);
+        Product product = productById.get();
+>>>>>>> Stashed changes
 
         Cart cart = cartRepository.findByUserInfo_IdAndStatus_Id(1L, 1L)
                 .orElseGet(() -> {
