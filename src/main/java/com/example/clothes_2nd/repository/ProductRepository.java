@@ -40,4 +40,7 @@ Page<Product> filterProduct(@Param("request") ProductFilterRequest request, Page
 //
     Page<Product> searchEverything(String search, Pageable pageable);
 
+    @Query(value = "SELECT p FROM Product p WHERE p.paid = false ")
+    Page<Product> findAllProduct(Pageable pageable);
+
 }

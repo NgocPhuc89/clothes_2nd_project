@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 public class CartSaveRequest {
     private String name;
-    private BigDecimal totalPrice;
+    private BigDecimal shippingFee;
     private String status;
     private String phone;
     private List<CartDetail> cartDetailList;

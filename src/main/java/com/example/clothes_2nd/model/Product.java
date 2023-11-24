@@ -20,7 +20,7 @@ public class Product {
     private String name;
     private String description;
     private BigDecimal price;
-
+    private Boolean paid;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<File> files;
 

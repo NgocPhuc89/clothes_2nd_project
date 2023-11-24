@@ -1,5 +1,6 @@
 package com.example.clothes_2nd.controller.rest.home.cart;
 
+import com.example.clothes_2nd.model.Cart;
 import com.example.clothes_2nd.service.home.cartDetailHome.request.CartDetailSaveRequest;
 import com.example.clothes_2nd.service.home.cartHome.request.CartSaveRequest;
 import com.example.clothes_2nd.service.home.cartHome.CartHomeService;
@@ -17,7 +18,7 @@ import java.util.List;
 public class CartRestController {
     private final CartHomeService cartHomeService;
 
-    @PostMapping("/checkout")
+    @PatchMapping ("/checkOut")
     public ResponseEntity<?> checkOut (@RequestBody CartSaveRequest request){
         cartHomeService.checkOut(request);
         return ResponseEntity.ok(request);
@@ -32,6 +33,11 @@ public class CartRestController {
     @GetMapping
     public CartHomeResponse findAllByUser(){
       return  cartHomeService.findAllByUser();
+    }
+
+    @DeleteMapping("{id}")
+    public CartHomeResponse removeItem(@PathVariable Long id) {
+        return cartHomeService.removeItem(id);
     }
 
 }

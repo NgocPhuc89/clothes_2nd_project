@@ -32,61 +32,63 @@ public class CartHomeService {
     private final StatusRepository statusRepository;
 
     public Cart checkOut(CartSaveRequest request) {
+        Cart cart = cartRepository.findByUserInfo_IdAndStatus_Id(1L, 1L)
+                .orElseThrow(() -> new RuntimeException("Chưa có cart"));
 
-        Cart cart = AppUtil.mapper.map(request, Cart.class);
-        LocationRegion locationRegion = request.getLocationRegion();;
-
+        AppUtil.mapper.map(request,cart);
+        LocationRegion locationRegion = request.getLocationRegion();
+        locationRegion.setUserInfo(cart.getUserInfo());
         locationRegionRepository.save(locationRegion);
+        List<CartDetail> cartDetails = cartDetailRepository.findCartDetailByCartId(cart.getId());
 
+        for(CartDetail item : cartDetails){
+                item.setQuantity(0L);
+                cartDetailRepository.save(item);
+
+                var optionalProduct = productRepository.findById(item.getProduct().getId());
+                Product product = optionalProduct.get();
+                product.setPaid(true);
+                productRepository.save(product);
+        }
+        cart.setStatus(new Status(2L));
         cart.setLocationRegion(locationRegion);
         cartRepository.save(cart);
-
         return cart;
     }
 
     public Cart addToCart(CartDetailSaveRequest request) {
-        Optional<Product> productById = productRepository.findById(request.getId());
-        Optional<Cart> cartById = cartRepository.findById(2L);
-        Optional<UserInfo> userInfoById = userInfoRepository.findById(1L);
-        Optional<Status> statusById = statusRepository.findById(1L);
-        Product product = productById.get();
+        var product = productRepository.findById(request.getId());
+        var userInfo = userInfoRepository.findById(1L);
+        CartDetail cartDetail = new CartDetail();
+        cartDetail.setProduct(product.get());
+        cartDetail.setQuantity(1L);
+        cartDetail.setPrice(product.orElseThrow().getPrice());
+        cartDetail.setTotal(cartDetail.getPrice());
 
+        Cart cart = cartRepository.findByUserInfo_IdAndStatus_Id(1L, 1L)
+                .orElseGet(() -> {
+                    Cart newCart = new Cart();
+                    cartDetail.setCart(newCart);
+                    newCart.setUserInfo(userInfo.get());
+                    newCart.setStatus(statusRepository.findAll().get(0));
 
-        if (cartById.isPresent()) {
-            Cart cart = cartById.get();
+                    List<CartDetail> cartDetails = new ArrayList<>();
+                    cartDetails.add(cartDetail);
+                    newCart.setCartDetails(cartDetails);
+                    newCart = cartRepository.save(newCart);
 
-            CartDetail cartDetail = new CartDetail();
-            cartDetail.setProduct(product);
+                    return newCart;
+                });
+        var check = cartDetailRepository.existsByCart_IdAndProduct_IdAndCart_Status_Id(cart.getId(), product.get().getId(), cart.getStatus().getId());
+        if(check){
+            return null;
+        }else {
             cartDetail.setCart(cart);
-            cartDetail.setQuantity(1L);
-            cartDetail.setPrice(productById.orElseThrow().getPrice());
-            cartDetail.setTotal(cartDetail.getPrice().multiply(BigDecimal.valueOf(cartDetail.getQuantity())));
             cartDetailRepository.save(cartDetail);
-
             cart.getCartDetails().add(cartDetail);
             cart.setTotalPrice(cart.getTotalPrice().add(cartDetail.getTotal()));
             cartRepository.save(cart);
             return cart;
-        } else {
-            Cart newCart = new Cart();
-            UserInfo userInfo = userInfoById.get();
-            Status status = statusById.get();
-
-            newCart.setUserInfo(userInfo);
-
-            CartDetail newCartDetail = new CartDetail();
-            newCartDetail.setProduct(product);
-            newCartDetail.setCart(newCart);
-            newCartDetail.setQuantity(1L);
-            newCartDetail.setPrice(productById.orElseThrow().getPrice());
-            newCartDetail.setTotal(newCartDetail.getPrice().multiply(BigDecimal.valueOf(newCartDetail.getQuantity())));
-            cartDetailRepository.save(newCartDetail);
-
-            newCart.setTotalPrice(newCartDetail.getTotal());
-            newCart.setStatus(status);
-
-            cartRepository.save(newCart);
-            return newCart;
         }
     }
 
@@ -101,12 +103,34 @@ public class CartHomeService {
        }
 
        for (var cartDetail : cart.getCartDetails()){
-           var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
-           productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles().stream().map(File::getUrl).collect(Collectors.toList()));
-           result.getListCartDetail().add(productDetail);
+           if(cartDetail.getQuantity() != 0){
+               var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
+               productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles().stream().map(File::getUrl).collect(Collectors.toList()));
+               result.getListCartDetail().add(productDetail);
+           }
        }
        result.setTotal(cart.getTotalPrice());
        return result;
+    }
+
+    public CartHomeResponse removeItem(Long id){
+        var result = new CartHomeResponse();
+        Cart cart = cartRepository.findByUserInfo_IdAndStatus_Id(1L, 1L).orElse(new Cart());
+        if(cart.getCartDetails() == null || cart.getCartDetails().size() == 0){
+            return result;
+        }
+        for(var cartDetail : cart.getCartDetails()){
+            if(cartDetail.getProduct().getId() == id){
+                cartDetail.setQuantity(0L);
+                return result;
+            }else {
+                var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
+                productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles().stream().map(File::getUrl).collect(Collectors.toList()));
+                result.getListCartDetail().add(productDetail);
+                result.setTotal(cart.getTotalPrice());
+            }
+        }
+        return result;
     }
 
 

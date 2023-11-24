@@ -25,7 +25,7 @@ public class ProductHomeRestController {
 
     @GetMapping("/{id}")
     public Optional<ProductDetailHomeResponse> findById(@PathVariable Long id){
-        return productHomeService.findById(id);
+        return productHomeService.productDetail(id);
     }
 
     @GetMapping("/filter")

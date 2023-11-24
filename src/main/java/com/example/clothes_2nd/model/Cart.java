@@ -17,12 +17,12 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal totalPrice;
+    private BigDecimal totalPrice = BigDecimal.ZERO;
     private LocalDate orderDate = LocalDate.now();
     private String phone;
     private BigDecimal shippingFee;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Status status;
 
     @OneToOne(cascade = CascadeType.ALL)

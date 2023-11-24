@@ -20,4 +20,8 @@ public class Status {
     private Long id;
 
     private String name;
+
+    public Status(Long id) {
+        this.id = id;
+    }
 }

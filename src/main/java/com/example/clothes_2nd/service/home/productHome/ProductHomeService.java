@@ -26,17 +26,17 @@ public class ProductHomeService {
     private final ProductRepository productRepository;
     private final FileRepository fileRepository;
 
-    public Page<ProductOfHomeListResponse> findAll(Pageable pageable){
-        return  productRepository.findAll(pageable)
+    public Page<ProductOfHomeListResponse> findAll(Pageable pageable) {
+        return productRepository.findAllProduct(pageable)
                 .map(product -> {
-                    var result  = AppUtil.mapper.map(product, ProductOfHomeListResponse.class);
+                    var result = AppUtil.mapper.map(product, ProductOfHomeListResponse.class);
                     result.setImageUrl(product.getFiles().size() > 0 ?
-                                    product.getFiles().get(0).getUrl() : "" );
+                            product.getFiles().get(0).getUrl() : "");
                     return result;
                 });
     }
 
-    public Optional<ProductDetailHomeResponse> findById(Long id){
+    public Optional<ProductDetailHomeResponse> productDetail(Long id) {
         return productRepository.findById(id)
                 .map(e -> {
                     var result = AppUtil.mapper.map(e, ProductDetailHomeResponse.class);
@@ -45,16 +45,16 @@ public class ProductHomeService {
                 });
     }
 
-    public Page<ProductOfHomeListResponse> filter(Pageable pageable , ProductFilterRequest request){
-        if(Strings.isNotBlank(request.getSize())){
+    public Page<ProductOfHomeListResponse> filter(Pageable pageable, ProductFilterRequest request) {
+        if (Strings.isNotBlank(request.getSize())) {
             request.setSizes(Arrays.stream(request.getSize().split(",")).map(Size::valueOf).collect(Collectors.toList()));
         }
 
-        return  productRepository.filterProduct(request, pageable)
+        return productRepository.filterProduct(request, pageable)
                 .map(e -> {
                     var result = AppUtil.mapper.map(e, ProductOfHomeListResponse.class);
                     result.setImageUrl(e.getFiles().size() > 0 ?
-                            e.getFiles().get(0).getUrl() : "" );
+                            e.getFiles().get(0).getUrl() : "");
                     return result;
                 });
     }
