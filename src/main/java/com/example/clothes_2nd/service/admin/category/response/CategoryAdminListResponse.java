@@ -15,4 +15,5 @@ import java.util.List;
 public class CategoryAdminListResponse {
     private Long id;
     private String name;
+    private CategoryAdminListResponse categoryParent;
 }

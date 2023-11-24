@@ -32,13 +32,13 @@ Page<Product> filterProduct(@Param("request") ProductFilterRequest request, Page
     //Page<Product> findProductBySizeAndPriceBetweenAndCategory_Id(Size size, BigDecimal price, BigDecimal price2, Long category_id, Pageable pageable);
 
 
-    @Query(value = "SELECT p FROM Product p WHERE " +
-            "(p.name like :search or " +
-           " p.status like :search or " +
-            " p.description like :search or " +
-            "p.category.name like :search)")
-//
-    Page<Product> searchEverything(String search, Pageable pageable);
+//    @Query(value = "SELECT p FROM Product p WHERE " +
+//            "(p.name like :search or " +
+//           " p.status like :search or " +
+//            " p.description like :search or " +
+//            "p.category.name like :search)")
+////
+//    Page<Product> searchEverything(String search, Pageable pageable);
 
     @Query(value = "SELECT p FROM Product p WHERE p.paid = false ")
     Page<Product> findAllProduct(Pageable pageable);

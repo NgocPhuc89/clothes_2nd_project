@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,6 +18,7 @@ public class CategoryAdminService {
     private final CategoryRepository categoryRepository;
 
     public List<CategoryAdminListResponse> getAllCategories() {
+
 
         return categoryRepository.findAllByCategoryParentIsNull().stream().map(e -> AppUtil.mapper.map(e,CategoryAdminListResponse.class)).collect(Collectors.toList());
     }
@@ -27,5 +29,10 @@ public class CategoryAdminService {
 
     public List<CategoryAdminListResponse> getNestedCategories(Long id) {
         return categoryRepository.findNestedCategoriesByParentId(id).stream().map(e -> AppUtil.mapper.map(e,CategoryAdminListResponse.class)).collect(Collectors.toList());
+
     }
+
+
+
+
 }

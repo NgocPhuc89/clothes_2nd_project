@@ -22,15 +22,19 @@ public class ProductRestController {
     private final ProductRepository productRepository;
     private final ProductService productService;
 
-    @GetMapping()
-    public Page<ProductListResponse>  getAllProducts(@RequestParam(value ="search",required = false)
-                                                         String search,
-                                                     Pageable pageable) {
-        return  productService.findAllWithSearchEveryThingAndPaging(search, pageable);
-    }
+//    @GetMapping()
+//    public Page<ProductListResponse>  getAllProducts(@RequestParam(value ="search",required = false)
+//                                                         String search,
+//                                                     Pageable pageable) {
+//        return  productService.findAllWithSearchEveryThingAndPaging(search, pageable);
+//    }
+    @GetMapping
+    public List<ProductListResponse> findAllProduct() {
+        return productService.finAllProducts();
 
+    }
     @GetMapping("/{id}")
-    public Product findAllProductById(@PathVariable Long id) {
+    public ProductListResponse findAllProductById(@PathVariable Long id) {
       return  productService.findProductById(id);
 
     }
@@ -39,10 +43,10 @@ public class ProductRestController {
         productService.createProducts(request);
         return ResponseEntity.noContent().build();
     }
-    @PutMapping("/update/{id}")
+    @PatchMapping ("/update/{id}")
     public ResponseEntity<?> updateProduct(@RequestBody ProductSaveRequest request, @PathVariable Long id) {
         productService.updateProduct(request,id);
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok("ok");
     }
 
     @DeleteMapping("/{id}")
