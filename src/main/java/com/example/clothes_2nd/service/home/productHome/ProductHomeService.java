@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,7 +28,10 @@ public class ProductHomeService {
     public Page<ProductOfHomeListResponse> findAll(Pageable pageable) {
         return productRepository.findAllProduct(pageable)
                 .map(product -> {
+
                     var result = AppUtil.mapper.map(product, ProductOfHomeListResponse.class);
+
+
                     result.setImageUrl(product.getFiles().size() > 0 ?
                             product.getFiles().get(0).getUrl() : "");
                     return result;

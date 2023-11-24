@@ -1,5 +1,4 @@
 package com.example.clothes_2nd.controller.rest.admin.user;
-
 import com.example.clothes_2nd.service.admin.user.requets.UserInfoSaveRequest;
 import com.example.clothes_2nd.service.admin.user.IUserInfoService;
 import com.example.clothes_2nd.service.admin.user.response.UserInfoSaveResponse;
@@ -33,15 +32,18 @@ public class UserInfoRestController {
         UserInfoSaveResponse userInfoSaveResponse = iUserInfoService.create(userInfo);
         return new ResponseEntity<>(userInfoSaveResponse, HttpStatus.CREATED);
     }
+
     @PutMapping("/edit/{id}")
     public ResponseEntity<?> updateUserInfo(@PathVariable Long id, @RequestBody @Valid UserInfoSaveRequest userInfo) {
         UserInfoSaveResponse updatedUserInfo = iUserInfoService.edit(id, userInfo);
-            return new ResponseEntity<>(updatedUserInfo, HttpStatus.OK);
+        return new ResponseEntity<>(updatedUserInfo, HttpStatus.OK);
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUserInfo(@PathVariable Long id) {
         iUserInfoService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }
 
