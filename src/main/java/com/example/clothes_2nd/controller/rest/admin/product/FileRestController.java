@@ -20,4 +20,5 @@ public class FileRestController {
     public List<File> uploadImage(@RequestParam("files") List<MultipartFile> image) throws IOException {
         return uploadFileService.saveImage(image);
     }
+
 }

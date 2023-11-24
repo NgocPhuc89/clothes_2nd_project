@@ -1,14 +1,13 @@
 package com.example.clothes_2nd.controller.rest.admin.product;
 
-import com.example.clothes_2nd.model.Category;
-import com.example.clothes_2nd.repository.CategoryRepository;
 import com.example.clothes_2nd.service.admin.category.CategoryAdminService;
 import com.example.clothes_2nd.service.admin.category.response.CategoryAdminListResponse;
-import com.example.clothes_2nd.service.home.categoryHome.response.CategoryListResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/categories")
@@ -30,4 +29,5 @@ public class CategoryRestController {
     public List<CategoryAdminListResponse> getNestedCategories(@PathVariable Long id) {
         return categoryAdminService.getNestedCategories(id);
     }
+
 }

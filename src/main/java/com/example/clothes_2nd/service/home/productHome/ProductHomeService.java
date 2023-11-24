@@ -1,5 +1,4 @@
 package com.example.clothes_2nd.service.home.productHome;
-
 import com.example.clothes_2nd.model.emun.Size;
 import com.example.clothes_2nd.service.home.productHome.request.ProductFilterRequest;
 import com.example.clothes_2nd.service.home.productHome.response.ProductDetailHomeResponse;
@@ -10,25 +9,18 @@ import com.example.clothes_2nd.repository.ProductRepository;
 import com.example.clothes_2nd.util.AppUtil;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
-
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 @Service
 @AllArgsConstructor
 public class ProductHomeService {
     private final ProductRepository productRepository;
     private final FileRepository fileRepository;
-
     public Page<ProductOfHomeListResponse> findAll(Pageable pageable) {
         return productRepository.findAllProduct(pageable)
                 .map(product -> {
@@ -38,7 +30,6 @@ public class ProductHomeService {
                     return result;
                 });
     }
-
     public Optional<ProductDetailHomeResponse> productDetail(Long id) {
         return productRepository.findById(id)
                 .map(e -> {
@@ -47,23 +38,11 @@ public class ProductHomeService {
                     return result;
                 });
     }
-
-<<<<<<< Updated upstream
     public Page<ProductOfHomeListResponse> filter(Pageable pageable, ProductFilterRequest request) {
         if (Strings.isNotBlank(request.getSize())) {
             request.setSizes(Arrays.stream(request.getSize().split(",")).map(Size::valueOf).collect(Collectors.toList()));
         }
-
         return productRepository.filterProduct(request, pageable)
-=======
-    public Page<ProductOfHomeListResponse> filter(Pageable pageable, ProductFilterRequest request){
-
-        pageable = PageRequest.of(pageable.getPageNumber(), 3);
-        if(Strings.isNotBlank(request.getSize())){
-            request.setSizes(Arrays.stream(request.getSize().split(",")).map(Size::valueOf).collect(Collectors.toList()));
-        }
-        return  productRepository.filterProduct(request, pageable)
->>>>>>> Stashed changes
                 .map(e -> {
                     var result = AppUtil.mapper.map(e, ProductOfHomeListResponse.class);
                     result.setImageUrl(e.getFiles().size() > 0 ?
