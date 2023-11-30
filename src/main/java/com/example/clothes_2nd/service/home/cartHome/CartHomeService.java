@@ -8,11 +8,13 @@ import com.example.clothes_2nd.service.home.cartHome.request.CartSaveRequest;
 import com.example.clothes_2nd.service.admin.location.request.LocationRegionSaveRequest;
 import com.example.clothes_2nd.service.home.cartHome.response.CartHomeResponse;
 import com.example.clothes_2nd.service.home.productHome.response.ProductDetailHomeResponse;
+import com.example.clothes_2nd.service.home.cartHome.response.RevenueResponse;
 import com.example.clothes_2nd.util.AppUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 @Service
@@ -154,14 +156,28 @@ public class CartHomeService {
                 cartDetail.setQuantity(0L);
                 cart.setTotalPrice(cart.getTotalPrice().subtract(cartDetail.getTotal()));
             }else {
+<<<<<<< HEAD
                 if(cartDetail.getQuantity() != 0) {
                     var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
                     productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles().stream().map(File::getUrl).collect(Collectors.toList()));
                     result.getListCartDetail().add(productDetail);
                 }
+=======
+                var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
+                productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles().stream()
+                        .map(File::getUrl).collect(Collectors.toList()));
+                result.getListCartDetail().add(productDetail);
+                result.setTotal(cart.getTotalPrice());
+>>>>>>> 80a90475e4d3cc144bf6b9295e4d57fa9f95f5a3
             }
         }
         result.setTotal(cart.getTotalPrice());
         return result;
     }
+
+  public List<RevenueResponse> calculateProductRevenue(LocalDate start, LocalDate end){
+        return cartRepository.calculateRevenue(start, end).stream().
+                map(e -> AppUtil.mapper.map(e, RevenueResponse.class)).collect(Collectors.toList());
+  }
+
 }

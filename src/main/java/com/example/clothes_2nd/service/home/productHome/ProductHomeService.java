@@ -38,9 +38,11 @@ public class ProductHomeService {
                     return result;
                 });
     }
+
     public Page<ProductOfHomeListResponse> filter(Pageable pageable, ProductFilterRequest request) {
         if (Strings.isNotBlank(request.getSize())) {
-            request.setSizes(Arrays.stream(request.getSize().split(",")).map(Size::valueOf).collect(Collectors.toList()));
+            request.setSizes(Arrays.stream(request.getSize().split(","))
+                    .map(Size::valueOf).collect(Collectors.toList()));
         }
         return productRepository.filterProduct(request, pageable)
                 .map(e -> {
