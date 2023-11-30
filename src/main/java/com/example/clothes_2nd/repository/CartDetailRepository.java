@@ -11,5 +11,10 @@ import java.util.List;
 public interface CartDetailRepository extends JpaRepository<CartDetail, Long> {
 
     List<CartDetail> findCartDetailByCartId(Long cartId);
+    //start, end
+    //2023-03-01 -> 2023-03-01
     boolean existsByCart_IdAndProduct_IdAndCart_Status_Id(Long cart_id, Long product_id, Long cart_status_id);
+
+
+
 }

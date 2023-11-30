@@ -1,20 +1,20 @@
 package com.example.clothes_2nd.service.home.cartHome;
 import com.example.clothes_2nd.model.*;
 import com.example.clothes_2nd.repository.*;
+import com.example.clothes_2nd.service.admin.category.response.CategoryAdminListResponse;
 import com.example.clothes_2nd.service.home.cartDetailHome.request.CartDetailSaveRequest;
 import com.example.clothes_2nd.service.home.cartDetailHome.response.CartDetailHomeResponse;
 import com.example.clothes_2nd.service.home.cartHome.request.CartSaveRequest;
 import com.example.clothes_2nd.service.admin.location.request.LocationRegionSaveRequest;
 import com.example.clothes_2nd.service.home.cartHome.response.CartHomeResponse;
+import com.example.clothes_2nd.service.home.cartHome.response.RevenueResponse;
 import com.example.clothes_2nd.util.AppUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
@@ -111,11 +111,18 @@ public class CartHomeService {
                 return result;
             }else {
                 var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
-                productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles().stream().map(File::getUrl).collect(Collectors.toList()));
+                productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles().stream()
+                        .map(File::getUrl).collect(Collectors.toList()));
                 result.getListCartDetail().add(productDetail);
                 result.setTotal(cart.getTotalPrice());
             }
         }
         return result;
     }
+
+  public List<RevenueResponse> calculateProductRevenue(LocalDate start, LocalDate end){
+        return cartRepository.calculateRevenue(start, end).stream().
+                map(e -> AppUtil.mapper.map(e, RevenueResponse.class)).collect(Collectors.toList());
+  }
+
 }
