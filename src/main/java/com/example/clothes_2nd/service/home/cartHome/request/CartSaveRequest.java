@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -19,6 +20,7 @@ public class CartSaveRequest {
     private BigDecimal shippingFee;
     private String status;
     private String phone;
-    private List<CartDetail> cartDetailList;
+    private BigDecimal totalPrice;
+    private List<Long> productIds = new ArrayList<>();
     private LocationRegion locationRegion;
 }

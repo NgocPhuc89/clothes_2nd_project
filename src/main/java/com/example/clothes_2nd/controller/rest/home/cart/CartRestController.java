@@ -1,7 +1,10 @@
 package com.example.clothes_2nd.controller.rest.home.cart;
 
 import com.example.clothes_2nd.model.Cart;
+import com.example.clothes_2nd.model.CartDetail;
+import com.example.clothes_2nd.service.home.cartDetailHome.request.CartDetailNotLoginSaveRequest;
 import com.example.clothes_2nd.service.home.cartDetailHome.request.CartDetailSaveRequest;
+import com.example.clothes_2nd.service.home.cartDetailHome.response.CartDetailHomeResponse;
 import com.example.clothes_2nd.service.home.cartHome.request.CartSaveRequest;
 import com.example.clothes_2nd.service.home.cartHome.CartHomeService;
 import com.example.clothes_2nd.service.home.cartHome.response.CartHomeResponse;
@@ -23,11 +26,21 @@ public class CartRestController {
         cartHomeService.checkOut(request);
         return ResponseEntity.ok(request);
     }
+    @PostMapping("/checkOutNotLogin")
+    public ResponseEntity<?> checkOutNotLogin (@RequestBody CartSaveRequest request){
+        cartHomeService.checkOutNotLogin(request);
+        return ResponseEntity.ok(request);
+    }
 
     @PostMapping("/addToCart")
     public ResponseEntity<?> addToCart (@RequestBody CartDetailSaveRequest request){
         cartHomeService.addToCart(request);
         return ResponseEntity.ok(request);
+    }
+
+    @PostMapping("/showCartDetailsNotLogin")
+    public CartHomeResponse showCartDetails(@RequestBody CartDetailNotLoginSaveRequest request){
+        return cartHomeService.showCartDetailsNotLogin(request);
     }
 
     @GetMapping

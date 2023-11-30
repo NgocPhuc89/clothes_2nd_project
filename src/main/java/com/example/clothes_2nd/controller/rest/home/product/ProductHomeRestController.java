@@ -7,6 +7,7 @@ import com.example.clothes_2nd.service.home.productHome.ProductHomeService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -29,7 +30,7 @@ public class ProductHomeRestController {
     }
 
     @GetMapping("/filter")
-    public Page<ProductOfHomeListResponse> filter(Pageable pageable , ProductFilterRequest request){
+    public Page<ProductOfHomeListResponse> filter(@PageableDefault(size = 3) Pageable pageable , ProductFilterRequest request){
         return productHomeService.filter(pageable,request);
     }
 }
