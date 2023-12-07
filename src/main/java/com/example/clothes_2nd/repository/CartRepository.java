@@ -27,11 +27,13 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
 //    List<Cart> calculateRevenue(@Param("request") CartSaveRequest request, @Param("start") Date start,
 //                                @Param("end") Date end);
 
+
     @Query(value = "SELECT new com.example.clothes_2nd.service.admin.revenue.response.RevenueResponse" +
             "(SUM(c.totalPrice), DATE(c.orderDate)) FROM Cart c WHERE " +
             "DATE_FORMAT(c.orderDate, '%Y-%m-%d') " +
             " BETWEEN DATE_FORMAT(:start, '%Y-%m-%d') AND DATE_FORMAT(:end, '%Y-%m-%d') group by DATE (c.orderDate) ")
     List<RevenueResponse> calculateRevenue(LocalDate start, LocalDate end);
+
 
     @Query(value = "select c from Cart as c where c.status.id = 5")
     List<Cart> ProductsSoldDay();

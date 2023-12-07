@@ -5,15 +5,16 @@ import com.example.clothes_2nd.service.home.cartDetailHome.request.CartDetailSav
 import com.example.clothes_2nd.service.home.cartHome.request.CartSaveRequest;
 import com.example.clothes_2nd.service.home.cartHome.CartHomeService;
 import com.example.clothes_2nd.service.home.cartHome.response.CartHomeResponse;
-import com.example.clothes_2nd.service.admin.revenue.response.RevenueResponse;
+
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@CrossOrigin
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/home/carts")
@@ -36,9 +37,8 @@ public class CartRestController {
         cartHomeService.addToCart(request);
         return ResponseEntity.ok(request);
     }
-
     @PostMapping("/showCartDetailsNotLogin")
-    public CartHomeResponse showCartDetails(@RequestBody CartDetailNotLoginSaveRequest request){
+    public CartHomeResponse showCartDetailsNotLogin(@RequestBody CartDetailNotLoginSaveRequest request){
         return cartHomeService.showCartDetailsNotLogin(request);
     }
 

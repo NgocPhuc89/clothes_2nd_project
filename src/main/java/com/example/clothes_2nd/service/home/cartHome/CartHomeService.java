@@ -7,11 +7,14 @@ import com.example.clothes_2nd.service.home.cartDetailHome.response.CartDetailHo
 import com.example.clothes_2nd.service.home.cartHome.request.CartSaveRequest;
 import com.example.clothes_2nd.service.home.cartHome.response.CartHomeResponse;
 import com.example.clothes_2nd.service.home.productHome.response.ProductDetailHomeResponse;
+
+
 import com.example.clothes_2nd.util.AppUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDate;
+
+
 import java.util.*;
 import java.util.stream.Collectors;
 @Service
@@ -71,8 +74,8 @@ public class CartHomeService {
                     newCart = cartRepository.save(newCart);
                     return newCart;
                 });
-        var check = cartDetailRepository.existsByCart_IdAndProduct_IdAndCart_Status_Id(cart.getId(),
-                product.get().getId(), cart.getStatus().getId());
+        var check = cartDetailRepository.existsByCart_IdAndProduct_IdAndCart_Status_IdAndQuantity(cart.getId(),
+                product.get().getId(), cart.getStatus().getId(), cartDetail.getQuantity());
         if (check) {
             return null;
         } else {
@@ -153,17 +156,12 @@ public class CartHomeService {
                 cartDetail.setQuantity(0L);
                 cart.setTotalPrice(cart.getTotalPrice().subtract(cartDetail.getTotal()));
             }else {
-
                 if(cartDetail.getQuantity() != 0) {
                     var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
-                    productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles().stream().map(File::getUrl).collect(Collectors.toList()));
+                    productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles()
+                            .stream().map(File::getUrl).collect(Collectors.toList()));
                     result.getListCartDetail().add(productDetail);
                 }
-                var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
-                productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles().stream()
-                        .map(File::getUrl).collect(Collectors.toList()));
-                result.getListCartDetail().add(productDetail);
-                result.setTotal(cart.getTotalPrice());
             }
         }
         result.setTotal(cart.getTotalPrice());

@@ -12,7 +12,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/files")
 @AllArgsConstructor
-@CrossOrigin
 public class FileRestController {
     private final UploadFileService uploadFileService;
 
