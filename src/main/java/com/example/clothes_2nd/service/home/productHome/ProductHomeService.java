@@ -1,5 +1,6 @@
 package com.example.clothes_2nd.service.home.productHome;
 import com.example.clothes_2nd.model.emun.Size;
+import com.example.clothes_2nd.service.admin.product.response.ProductListResponse;
 import com.example.clothes_2nd.service.home.productHome.request.ProductFilterRequest;
 import com.example.clothes_2nd.service.home.productHome.response.ProductDetailHomeResponse;
 import com.example.clothes_2nd.service.home.productHome.response.ProductOfHomeListResponse;
@@ -30,6 +31,7 @@ public class ProductHomeService {
                     return result;
                 });
     }
+
     public Optional<ProductDetailHomeResponse> productDetail(Long id) {
         return productRepository.findById(id)
                 .map(e -> {
@@ -38,9 +40,11 @@ public class ProductHomeService {
                     return result;
                 });
     }
+
     public Page<ProductOfHomeListResponse> filter(Pageable pageable, ProductFilterRequest request) {
         if (Strings.isNotBlank(request.getSize())) {
-            request.setSizes(Arrays.stream(request.getSize().split(",")).map(Size::valueOf).collect(Collectors.toList()));
+            request.setSizes(Arrays.stream(request.getSize().split(","))
+                    .map(Size::valueOf).collect(Collectors.toList()));
         }
         return productRepository.filterProduct(request, pageable)
                 .map(e -> {
@@ -49,5 +53,12 @@ public class ProductHomeService {
                             e.getFiles().get(0).getUrl() : "");
                     return result;
                 });
+    }
+
+    public Page<ProductOfHomeListResponse> countProduct(Pageable pageable){
+        return productRepository.countProduct(pageable).map(e -> {
+            var result = AppUtil.mapper.map(e, ProductOfHomeListResponse.class);
+            return result;
+        });
     }
 }

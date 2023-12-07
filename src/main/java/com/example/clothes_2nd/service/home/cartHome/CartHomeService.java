@@ -5,14 +5,13 @@ import com.example.clothes_2nd.service.home.cartDetailHome.request.CartDetailNot
 import com.example.clothes_2nd.service.home.cartDetailHome.request.CartDetailSaveRequest;
 import com.example.clothes_2nd.service.home.cartDetailHome.response.CartDetailHomeResponse;
 import com.example.clothes_2nd.service.home.cartHome.request.CartSaveRequest;
-import com.example.clothes_2nd.service.admin.location.request.LocationRegionSaveRequest;
 import com.example.clothes_2nd.service.home.cartHome.response.CartHomeResponse;
 import com.example.clothes_2nd.service.home.productHome.response.ProductDetailHomeResponse;
 import com.example.clothes_2nd.util.AppUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 @Service
@@ -154,14 +153,23 @@ public class CartHomeService {
                 cartDetail.setQuantity(0L);
                 cart.setTotalPrice(cart.getTotalPrice().subtract(cartDetail.getTotal()));
             }else {
+
                 if(cartDetail.getQuantity() != 0) {
                     var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
                     productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles().stream().map(File::getUrl).collect(Collectors.toList()));
                     result.getListCartDetail().add(productDetail);
                 }
+                var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
+                productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles().stream()
+                        .map(File::getUrl).collect(Collectors.toList()));
+                result.getListCartDetail().add(productDetail);
+                result.setTotal(cart.getTotalPrice());
             }
         }
         result.setTotal(cart.getTotalPrice());
         return result;
     }
+
+
+
 }

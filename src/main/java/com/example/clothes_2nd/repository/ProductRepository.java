@@ -22,6 +22,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 //            " AND p.name like :#{#request.search}"
 //    )
 //    Page<Product> filterProduct(ProductFilterRequest request, Pageable pageable);
+
 @Query(value = "SELECT p FROM Product p WHERE " +
         "(:#{#request.sizes} is null or  p.size in :#{#request.sizes}) " +
         "AND (COALESCE(:#{#request.categoryId}, p.category.id) = p.category.id) " +
@@ -29,18 +30,20 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         "AND (COALESCE(:#{#request.priceMax}, p.price) >= p.price) " +
         "AND p.name LIKE CONCAT('%', :#{#request.search}, '%')")
 Page<Product> filterProduct(@Param("request") ProductFilterRequest request, Pageable pageable);
+
     //Page<Product> findProductBySizeAndPriceBetweenAndCategory_Id(Size size, BigDecimal price, BigDecimal price2, Long category_id, Pageable pageable);
-
-
 //    @Query(value = "SELECT p FROM Product p WHERE " +
 //            "(p.name like :search or " +
 //           " p.status like :search or " +
 //            " p.description like :search or " +
 //            "p.category.name like :search)")
-////
 //    Page<Product> searchEverything(String search, Pageable pageable);
 
     @Query(value = "SELECT p FROM Product p WHERE p.paid = false ")
     Page<Product> findAllProduct(Pageable pageable);
+
+//    đếm số lượng sản phẩm
+    @Query(value = "select p from Product as p where p.paid = false")
+    Page<Product> countProduct(Pageable pageable);
 
 }

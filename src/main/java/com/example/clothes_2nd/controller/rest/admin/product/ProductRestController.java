@@ -6,9 +6,12 @@ import com.example.clothes_2nd.service.admin.product.request.ProductSaveRequest;
 import com.example.clothes_2nd.service.admin.product.response.ProductListResponse;
 import com.example.clothes_2nd.repository.ProductRepository;
 import com.example.clothes_2nd.service.admin.product.ProductService;
+import com.example.clothes_2nd.service.home.productHome.ProductHomeService;
+import com.example.clothes_2nd.service.home.productHome.response.ProductOfHomeListResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/api/products")
 public class ProductRestController {
-    private final ProductRepository productRepository;
+    private ProductHomeService productHomeService;
     private final ProductService productService;
 
 //    @GetMapping()
@@ -53,5 +56,9 @@ public class ProductRestController {
     public ResponseEntity<?> deleteProduct(Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/count")
+    public Page<ProductOfHomeListResponse> count( Pageable pageable){
+        return productHomeService.countProduct(pageable);
     }
 }
