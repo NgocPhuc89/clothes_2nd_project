@@ -13,6 +13,8 @@ import com.example.clothes_2nd.util.AppUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
@@ -74,8 +76,8 @@ public class CartHomeService {
                     newCart = cartRepository.save(newCart);
                     return newCart;
                 });
-        var check = cartDetailRepository.existsByCart_IdAndProduct_IdAndCart_Status_Id(cart.getId(),
-                product.get().getId(), cart.getStatus().getId());
+        var check = cartDetailRepository.existsByCart_IdAndProduct_IdAndCart_Status_IdAndQuantity(cart.getId(),
+                product.get().getId(), cart.getStatus().getId(), cartDetail.getQuantity());
         if (check) {
             return null;
         } else {
@@ -156,19 +158,12 @@ public class CartHomeService {
                 cartDetail.setQuantity(0L);
                 cart.setTotalPrice(cart.getTotalPrice().subtract(cartDetail.getTotal()));
             }else {
-<<<<<<< HEAD
                 if(cartDetail.getQuantity() != 0) {
                     var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
-                    productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles().stream().map(File::getUrl).collect(Collectors.toList()));
+                    productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles()
+                            .stream().map(File::getUrl).collect(Collectors.toList()));
                     result.getListCartDetail().add(productDetail);
                 }
-=======
-                var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
-                productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles().stream()
-                        .map(File::getUrl).collect(Collectors.toList()));
-                result.getListCartDetail().add(productDetail);
-                result.setTotal(cart.getTotalPrice());
->>>>>>> 80a90475e4d3cc144bf6b9295e4d57fa9f95f5a3
             }
         }
         result.setTotal(cart.getTotalPrice());

@@ -17,9 +17,8 @@ import java.util.Optional;
 public interface CartRepository extends JpaRepository<Cart, Long> {
     Optional<Cart> findByUserInfo_IdAndStatus_Id(Long userInfo_id, Long status_id);
 
-<<<<<<< HEAD
     Optional<Cart> findByStatus_Id(Long status_id);
-=======
+
 //    @Query( value = "SELECT  SUM(orderDate) FROM Cart c WHERE" + "(COALESCE(:#{#request.id}, c.id)=c.id) +
 //            "AND c.totalPrice BETWEEN :start AND :end")
 //
@@ -33,6 +32,5 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     @Query("SELECT c FROM Cart c WHERE c.orderDate BETWEEN :start AND :end")
     List<Cart> calculateRevenue(@Param("start") LocalDate start, @Param("end") LocalDate end);
 
->>>>>>> 80a90475e4d3cc144bf6b9295e4d57fa9f95f5a3
 
 }
