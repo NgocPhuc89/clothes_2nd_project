@@ -7,11 +7,17 @@ import com.example.clothes_2nd.service.admin.product.response.ProductListRespons
 import com.example.clothes_2nd.repository.ProductRepository;
 import com.example.clothes_2nd.service.admin.product.ProductService;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -20,9 +26,22 @@ import java.util.List;
 public class ProductRestController {
     private final ProductRepository productRepository;
     private final ProductService productService;
+
+
     @GetMapping
-    public List<ProductListResponse> findAllProduct()       {
-        return productService.finAllProducts();
+    public ResponseEntity<?> getAllProducts(@RequestParam(defaultValue = "") String search,
+                                            @RequestParam(defaultValue = "1") int page,
+                                            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable;
+        if (page <= 0) {
+            page = 0;
+        }
+        else {
+            page = page - 1;
+        }
+        pageable = PageRequest.of(page, size);
+        Page<ProductListResponse>  productListResponses =  productService.findAllWithSearchEveryThingAndPaging(search,pageable);
+       return new ResponseEntity<>(productListResponses, HttpStatus.OK);
 
     }
     @GetMapping("/{id}")
@@ -32,18 +51,19 @@ public class ProductRestController {
     }
     @PostMapping
     public ResponseEntity<?> createProduct(@RequestBody ProductSaveRequest request) {
-        productService.createProducts(request);
-        return ResponseEntity.noContent().build();
+        ProductListResponse productListResponse = productService.createProducts(request);
+
+        return new ResponseEntity<>(productListResponse, HttpStatus.CREATED);
     }
-    @PatchMapping ("/update/{id}")
+    @PutMapping ("/{id}")
     public ResponseEntity<?> updateProduct(@RequestBody ProductSaveRequest request, @PathVariable Long id) {
-        productService.updateProduct(request,id);
-        return ResponseEntity.ok("ok");
+        ProductListResponse productListResponse =   productService.updateProduct(request,id);
+        return new ResponseEntity<>(productListResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(Long id) {
+    public ResponseEntity<?> deleteProductById(Long id) {
         productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

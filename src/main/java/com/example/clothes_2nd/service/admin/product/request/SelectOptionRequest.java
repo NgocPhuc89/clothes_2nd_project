@@ -10,5 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SelectOptionRequest {
-    String id;
+    Long id;
+    String url;
 }
