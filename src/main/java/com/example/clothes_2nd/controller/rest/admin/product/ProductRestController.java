@@ -20,15 +20,8 @@ import java.util.List;
 public class ProductRestController {
     private final ProductRepository productRepository;
     private final ProductService productService;
-
-//    @GetMapping()
-//    public Page<ProductListResponse>  getAllProducts(@RequestParam(value ="search",required = false)
-//                                                         String search,
-//                                                     Pageable pageable) {
-//        return  productService.findAllWithSearchEveryThingAndPaging(search, pageable);
-//    }
     @GetMapping
-    public List<ProductListResponse> findAllProduct() {
+    public List<ProductListResponse> findAllProduct()       {
         return productService.finAllProducts();
 
     }
