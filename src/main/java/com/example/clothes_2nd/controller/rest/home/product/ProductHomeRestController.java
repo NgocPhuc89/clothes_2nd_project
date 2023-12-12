@@ -34,4 +34,9 @@ public class ProductHomeRestController {
         return productHomeService.filter(pageable,request);
     }
 
+    @GetMapping("/filterHome")
+    public Page<ProductOfHomeListResponse> filterHome(Pageable pageable , ProductFilterRequest request){
+        return productHomeService.filter(pageable,request);
+    }
+
 }

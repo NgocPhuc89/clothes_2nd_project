@@ -41,7 +41,5 @@ public class CategoryHomeService {
         }
             return result;
     }
-//    public List<Category> findAllById(Long id) {
-//        return categoryRepository.findAllByCategoryParentIsNotNullAndAndCategoryParent_Id(id);
-//    }
+
 }

@@ -14,16 +14,6 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-
-//    @Query(value = "SELECT p FROM Product p WHERE " +
-//            " (:#{#request.size} is null or :#{#request.size} = p.size) " +
-//            " AND (:#{#request.categoryId} is null or :#{#request.categoryId} = p.category.id)" +
-//            " AND (:#{#request.priceMin} is null or :#{#request.priceMin} < p.price)" +
-//            " AND (:#{#request.priceMax} is null or :#{#request.priceMax} > p.price)" +
-//            " AND p.name like :#{#request.search}"
-//    )
-//    Page<Product> filterProduct(ProductFilterRequest request, Pageable pageable);
-
 @Query(value = "SELECT p FROM Product p WHERE " +
         "(:#{#request.sizes} is null or  p.size in :#{#request.sizes}) " +
         "AND (COALESCE(:#{#request.categoryId}, p.category.id) = p.category.id) " +
@@ -46,8 +36,10 @@ Page<Product> filterProduct(@Param("request") ProductFilterRequest request, Page
     @Query(value = "SELECT p FROM Product p WHERE p.paid = false ")
     Page<Product> findAllProduct(Pageable pageable);
 
+
 //    đếm số lượng sản phẩm
     @Query(value = "select p from Product as p where p.paid = false")
     Page<Product> countProduct(Pageable pageable);
+
 
 }

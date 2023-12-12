@@ -45,6 +45,7 @@ public class CartHomeService {
             product.setPaid(true);
             productRepository.save(product);
         }
+        cart.setTotalPrice(request.getTotalPrice());
         cart.setStatus(new Status(2L));
         cart.setLocationRegion(locationRegion);
         cartRepository.save(cart);
@@ -107,22 +108,22 @@ public class CartHomeService {
     }
 
     public void checkOutNotLogin (CartSaveRequest request) {
-        var status = statusRepository.findById(2L);
-        Cart cart = AppUtil.mapper.map(request, Cart.class);
-        cart.setStatus(status.get());
-        cart = cartRepository.save(cart);
-        List<CartDetail> cartDetails = new ArrayList<>();
-        for(var productId : request.getProductIds()){
-            var product = productRepository.findById(productId);
-            var cartDetail = AppUtil.mapper.map(product, CartDetail.class);
-            cartDetail.setProduct(product.get());
-            cartDetail.getProduct().setPaid(true);
-            cartDetail.setCart(cart);
-            cartDetail.setQuantity(1L);
-            cartDetail.setTotal(product.get().getPrice());
-            cartDetails.add(cartDetail);
-        }
-        cartDetailRepository.saveAll(cartDetails);
+            var status = statusRepository.findById(2L);
+            Cart cart = AppUtil.mapper.map(request, Cart.class);
+            cart.setStatus(status.get());
+            cart = cartRepository.save(cart);
+            List<CartDetail> cartDetails = new ArrayList<>();
+            for(var productId : request.getProductIds()){
+                var product = productRepository.findById(productId);
+                var cartDetail = AppUtil.mapper.map(product, CartDetail.class);
+                cartDetail.setProduct(product.get());
+                cartDetail.getProduct().setPaid(true);
+                cartDetail.setCart(cart);
+                cartDetail.setQuantity(1L);
+                cartDetail.setTotal(product.get().getPrice());
+                cartDetails.add(cartDetail);
+            }
+            cartDetailRepository.saveAll(cartDetails);
     }
 
     public CartHomeResponse findAllByUser() {
@@ -135,10 +136,14 @@ public class CartHomeService {
             return result;
         }
         for (var cartDetail : cart.getCartDetails()) {
-            if (cartDetail.getQuantity() != 0) {
+            if (cartDetail.getQuantity() != 0 && !cartDetail.getProduct().getPaid()) {
                 var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
                 productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles().stream().map(File::getUrl).collect(Collectors.toList()));
                 result.getListCartDetail().add(productDetail);
+            }
+            else {
+                cartDetail.setQuantity(0L);
+                cartDetailRepository.save(cartDetail);
             }
         }
         result.setTotal(cart.getTotalPrice());
@@ -154,7 +159,6 @@ public class CartHomeService {
         for (var cartDetail : cart.getCartDetails()) {
             if (cartDetail.getProduct().getId() == id) {
                 cartDetail.setQuantity(0L);
-                cart.setTotalPrice(cart.getTotalPrice().subtract(cartDetail.getTotal()));
             }else {
                 if(cartDetail.getQuantity() != 0) {
                     var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
@@ -164,7 +168,7 @@ public class CartHomeService {
                 }
             }
         }
-        result.setTotal(cart.getTotalPrice());
+//        result.setTotal(cart.getTotalPrice());
         return result;
     }
 
