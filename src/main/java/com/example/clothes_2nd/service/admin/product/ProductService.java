@@ -157,11 +157,7 @@ public class ProductService {
 
 
     public void deleteProduct(Long id) {
-        if (id != null && productRepository.existsById(id)) {
-            productRepository.deleteById(id);
-        } else {
-            throw new IllegalArgumentException("Không thể xóa sản phẩm với id: " + id);
-        }
+        productRepository.deleteById(id);
     }
 
 

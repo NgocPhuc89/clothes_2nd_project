@@ -32,15 +32,13 @@ public class ProductRestController {
 
     @GetMapping
     public ResponseEntity<?> getAllProducts(@RequestParam(defaultValue = "") String search,
-                                            @RequestParam(defaultValue = "1") int page,
+                                            @RequestParam(defaultValue = "0") int page,
                                             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable;
-        if (page <= 0) {
+        if (page < 0) {
             page = 0;
         }
-        else {
-            page = page - 1;
-        }
+
         pageable = PageRequest.of(page, size);
         Page<ProductListResponse>  productListResponses =  productService.findAllWithSearchEveryThingAndPaging(search,pageable);
        return new ResponseEntity<>(productListResponses, HttpStatus.OK);
@@ -64,9 +62,9 @@ public class ProductRestController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProductById(Long id) {
+    public ResponseEntity<?> deleteProductById(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>( HttpStatus.OK);
     }
     @GetMapping("/count")
     public Page<ProductOfHomeListResponse> count( Pageable pageable){

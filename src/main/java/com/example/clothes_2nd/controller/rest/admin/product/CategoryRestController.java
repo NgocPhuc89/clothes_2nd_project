@@ -10,7 +10,9 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
+
 @RequestMapping("api/admin/categories")
+
 public class CategoryRestController {
 
     private final CategoryAdminService categoryAdminService;
