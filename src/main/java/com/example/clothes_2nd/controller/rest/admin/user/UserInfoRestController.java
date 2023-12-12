@@ -1,4 +1,5 @@
 package com.example.clothes_2nd.controller.rest.admin.user;
+import com.example.clothes_2nd.repository.UserInfoRepository;
 import com.example.clothes_2nd.service.admin.user.requets.UserInfoSaveRequest;
 import com.example.clothes_2nd.service.admin.user.IUserInfoService;
 import com.example.clothes_2nd.service.admin.user.response.UserInfoResponse;
@@ -17,8 +18,11 @@ public class UserInfoRestController {
 
     private final IUserInfoService iUserInfoService;
 
-    public UserInfoRestController(IUserInfoService iUserInfoService) {
+    private final UserInfoRepository userInfoRepository;
+
+    public UserInfoRestController(IUserInfoService iUserInfoService, UserInfoRepository userInfoRepository) {
         this.iUserInfoService = iUserInfoService;
+        this.userInfoRepository = userInfoRepository;
     }
 
 
@@ -28,14 +32,16 @@ public class UserInfoRestController {
         return new ResponseEntity<>(userInfos, HttpStatus.OK);
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<?> createUserInfo(@RequestBody @Valid UserInfoSaveRequest userInfo) {
-
+        if (userInfoRepository.existsByPhone(userInfo.getPhone())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         UserInfoSaveResponse userInfoSaveResponse = iUserInfoService.create(userInfo);
         return new ResponseEntity<>(userInfoSaveResponse, HttpStatus.CREATED);
     }
 
-    @PutMapping("/edit/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateUserInfo(@PathVariable Long id, @RequestBody @Valid UserInfoSaveRequest userInfo) {
         UserInfoSaveResponse updatedUserInfo = iUserInfoService.edit(id, userInfo);
         return new ResponseEntity<>(updatedUserInfo, HttpStatus.OK);

@@ -113,6 +113,10 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
     Page<UserInfoSaveResponse> getAllUserInfo(@Param("search") String search, Pageable pageable);
 
 
+
     boolean existsByEmailIgnoreCase(String email);
+
+    Boolean existsByPhone(String phone);
+
 
 }

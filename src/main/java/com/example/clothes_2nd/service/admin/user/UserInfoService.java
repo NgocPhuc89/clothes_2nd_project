@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -49,52 +50,117 @@ public class UserInfoService implements IUserInfoService {
 
     @Override
     public UserInfoSaveResponse create(UserInfoSaveRequest userInfoSaveRequest) {
+        String username = userInfoSaveRequest.getUsername();
+        String avatarId = userInfoSaveRequest.getAvatarId();
+        String email = userInfoSaveRequest.getEmail();
+        String gender = userInfoSaveRequest.getGender();
+        String provinceId = userInfoSaveRequest.getProvinceId();
+        String districtId = userInfoSaveRequest.getDistrictId();
+        String wardId = userInfoSaveRequest.getWardId();
+        String provinceName = userInfoSaveRequest.getProvinceName();
+        String districtName = userInfoSaveRequest.getDistrictName();
+        String wardName = userInfoSaveRequest.getWardName();
+        String address = userInfoSaveRequest.getAddress();
 
-        User user = new User();
-        user.setUsername(userInfoSaveRequest.getUsername());
-        user.setPassword(userInfoSaveRequest.getPassword());
+        if(username == null && avatarId == null && email == null && gender == null && provinceId == null
+                && districtId == null && wardId == null  && address == null) {
+            User user = new User();
+            user.setUsername(null);
+            user.setPassword("123123");
+            user.setAvatar(null);
+            user.setRole(Role.ROLE_USER);
+            userRepository.save(user);
 
-        user.setAvatar(File.builder().id(Long.valueOf(userInfoSaveRequest.getAvatarId())).build());
-        user.setRole(Role.ROLE_USER);
+            UserInfo userInfo = new UserInfo();
+            userInfo.setFullName(userInfoSaveRequest.getFullName());
+            userInfo.setEmail(null);
+            userInfo.setPhone(userInfoSaveRequest.getPhone());
+            userInfo.setGender(null);
+            userInfo.setUser(user);
+            userInfoRepository.save(userInfo);
 
-        userRepository.save(user);
+            LocationRegion locationRegion = new LocationRegion();
+            locationRegion.setProvinceId(null);
+            locationRegion.setProvinceName(null);
+            locationRegion.setDistrictId(null);
+            locationRegion.setDistrictName(null);
+            locationRegion.setWardId(null);
+            locationRegion.setWardName(null);
+            locationRegion.setAddress(null);
+            locationRegion.setUserInfo(userInfo);
+            userLocationRepository.save(locationRegion);
 
-        UserInfo userInfo = new UserInfo();
-        userInfo.setFullName(userInfoSaveRequest.getFullName());
-        userInfo.setEmail(userInfoSaveRequest.getEmail());
-        userInfo.setPhone(userInfoSaveRequest.getPhone());
-        userInfo.setGender(userInfoSaveRequest.getGender());
-        userInfo.setUser(user);
-        userInfoRepository.save(userInfo);
+            UserInfoSaveResponse userInfoSaveResponse = new UserInfoSaveResponse();
+            userInfoSaveResponse.setId(userInfo.getId());
+            userInfoSaveResponse.setUsername(user.getUsername());
+            userInfoSaveResponse.setPassword(user.getPassword());
+            userInfoSaveResponse.setAvatarId(userInfoSaveResponse.getAvatarId());
+            userInfoSaveResponse.setFullName(userInfo.getFullName());
+            userInfoSaveResponse.setEmail(userInfo.getEmail());
+            userInfoSaveResponse.setPhone(userInfo.getPhone());
+            userInfoSaveResponse.setGender(userInfo.getGender());
+            userInfoSaveResponse.setProvinceId(locationRegion.getProvinceId());
+            userInfoSaveResponse.setProvinceName(locationRegion.getProvinceName());
+            userInfoSaveResponse.setDistrictId(locationRegion.getDistrictId());
+            userInfoSaveResponse.setDistrictName(locationRegion.getDistrictName());
+            userInfoSaveResponse.setWardId(locationRegion.getWardId());
+            userInfoSaveResponse.setWardName(locationRegion.getWardName());
+            userInfoSaveResponse.setAddress(locationRegion.getAddress());
+            return userInfoSaveResponse;
+        }
+        else {
+            User user = new User();
+            user.setUsername(userInfoSaveRequest.getUsername());
+            user.setPassword("123123");
+            if (!Objects.equals(userInfoSaveRequest.getAvatarId(), "")) {
+                user.setAvatar(File.builder().id(Long.valueOf(userInfoSaveRequest.getAvatarId())).build());
+            }
+            user.setRole(Role.ROLE_USER);
 
-        LocationRegion locationRegion = new LocationRegion();
-        locationRegion.setProvinceId(userInfoSaveRequest.getProvinceId());
-        locationRegion.setProvinceName(userInfoSaveRequest.getProvinceName());
-        locationRegion.setDistrictId(userInfoSaveRequest.getDistrictId());
-        locationRegion.setDistrictName(userInfoSaveRequest.getDistrictName());
-        locationRegion.setWardId(userInfoSaveRequest.getWardId());
-        locationRegion.setWardName(userInfoSaveRequest.getWardName());
-        locationRegion.setAddress(userInfoSaveRequest.getAddress());
-        locationRegion.setUserInfo(userInfo);
-        userLocationRepository.save(locationRegion);
+            userRepository.save(user);
 
-        UserInfoSaveResponse userInfoSaveResponse = new UserInfoSaveResponse();
-        userInfoSaveResponse.setId(userInfo.getId());
-        userInfoSaveResponse.setUsername(user.getUsername());
-        userInfoSaveResponse.setPassword(user.getPassword());
-        userInfoSaveResponse.setAvatarId(userInfoSaveResponse.getAvatarId());
-        userInfoSaveResponse.setFullName(userInfo.getFullName());
-        userInfoSaveResponse.setEmail(userInfo.getEmail());
-        userInfoSaveResponse.setPhone(userInfo.getPhone());
-        userInfoSaveResponse.setGender(userInfo.getGender());
-        userInfoSaveResponse.setProvinceId(locationRegion.getProvinceId());
-        userInfoSaveResponse.setProvinceName(locationRegion.getProvinceName());
-        userInfoSaveResponse.setDistrictId(locationRegion.getDistrictId());
-        userInfoSaveResponse.setDistrictName(locationRegion.getDistrictName());
-        userInfoSaveResponse.setWardId(locationRegion.getWardId());
-        userInfoSaveResponse.setWardName(locationRegion.getWardName());
-        return userInfoSaveResponse;
+            UserInfo userInfo = new UserInfo();
+            userInfo.setFullName(userInfoSaveRequest.getFullName());
+            userInfo.setEmail(userInfoSaveRequest.getEmail());
+            userInfo.setPhone(userInfoSaveRequest.getPhone());
+            userInfo.setGender(userInfoSaveRequest.getGender());
+            userInfo.setUser(user);
+            userInfoRepository.save(userInfo);
+
+            LocationRegion locationRegion = new LocationRegion();
+            locationRegion.setProvinceId(userInfoSaveRequest.getProvinceId());
+            locationRegion.setProvinceName(userInfoSaveRequest.getProvinceName());
+            locationRegion.setDistrictId(userInfoSaveRequest.getDistrictId());
+            locationRegion.setDistrictName(userInfoSaveRequest.getDistrictName());
+            locationRegion.setWardId(userInfoSaveRequest.getWardId());
+            locationRegion.setWardName(userInfoSaveRequest.getWardName());
+            locationRegion.setAddress(userInfoSaveRequest.getAddress());
+            locationRegion.setUserInfo(userInfo);
+            userLocationRepository.save(locationRegion);
+
+            UserInfoSaveResponse userInfoSaveResponse = new UserInfoSaveResponse();
+            userInfoSaveResponse.setId(userInfo.getId());
+            userInfoSaveResponse.setUsername(user.getUsername());
+            userInfoSaveResponse.setPassword(user.getPassword());
+            userInfoSaveResponse.setAvatarId(userInfoSaveResponse.getAvatarId());
+            userInfoSaveResponse.setFullName(userInfo.getFullName());
+            userInfoSaveResponse.setEmail(userInfo.getEmail());
+            userInfoSaveResponse.setPhone(userInfo.getPhone());
+            userInfoSaveResponse.setGender(userInfo.getGender());
+            userInfoSaveResponse.setProvinceId(locationRegion.getProvinceId());
+            userInfoSaveResponse.setProvinceName(locationRegion.getProvinceName());
+            userInfoSaveResponse.setDistrictId(locationRegion.getDistrictId());
+            userInfoSaveResponse.setDistrictName(locationRegion.getDistrictName());
+            userInfoSaveResponse.setWardId(locationRegion.getWardId());
+            userInfoSaveResponse.setWardName(locationRegion.getWardName());
+            userInfoSaveResponse.setAddress(locationRegion.getAddress());
+            return userInfoSaveResponse;
+        }
+
+
+
     }
+
     @Override
     public UserInfoSaveResponse edit(Long userId, UserInfoSaveRequest userInfoUpdateRequest) {
         User user = userRepository.findById(userId).orElse(null);
@@ -123,7 +189,7 @@ public class UserInfoService implements IUserInfoService {
         }
 
 
-        UserInfoSaveResponse userInfoUpdateResponse= new UserInfoSaveResponse();
+        UserInfoSaveResponse userInfoUpdateResponse = new UserInfoSaveResponse();
         userInfoUpdateResponse.setId(user.getId());
         userInfoUpdateResponse.setUsername(user.getUsername());
         userInfoUpdateResponse.setPassword(user.getPassword());
@@ -161,7 +227,7 @@ public class UserInfoService implements IUserInfoService {
     public void deleteById(Long id) {
         Optional<UserInfoSaveResponse> userInfoSaveResponse = userInfoRepository.getUserInfoById(id);
 
-        if(userInfoSaveResponse.isPresent()) {
+        if (userInfoSaveResponse.isPresent()) {
             userLocationRepository.deleteByUserInfoId(userInfoSaveResponse.get().getId());
             userInfoRepository.deleteById(id);
             userRepository.deleteById(userInfoSaveResponse.get().getUserId());

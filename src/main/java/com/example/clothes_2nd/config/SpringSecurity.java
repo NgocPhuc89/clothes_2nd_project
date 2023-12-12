@@ -28,7 +28,9 @@ public class SpringSecurity {
         http.csrf().disable().authorizeHttpRequests(authorize ->
                 authorize.requestMatchers("/api/home/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/api/admin/**").permitAll()
+                        .requestMatchers("/api/admin/userinfo/**").permitAll()
+                        .requestMatchers("/api/files/**").permitAll()
                         .anyRequest().authenticated());
         return http.build();
     }
