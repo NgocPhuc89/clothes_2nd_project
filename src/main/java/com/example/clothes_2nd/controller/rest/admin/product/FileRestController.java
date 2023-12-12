@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/files")
+@RequestMapping("/api/admin/files")
 @AllArgsConstructor
 public class FileRestController {
     private final UploadFileService uploadFileService;

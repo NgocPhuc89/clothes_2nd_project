@@ -24,7 +24,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/products")
+@RequestMapping("/api/admin/products")
 public class ProductRestController {
     private ProductHomeService productHomeService;
     private final ProductService productService;

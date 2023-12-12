@@ -2,6 +2,7 @@ package com.example.clothes_2nd.repository;
 
 import com.example.clothes_2nd.model.Cart;
 import com.example.clothes_2nd.service.admin.cart.response.CartListResponse;
+import com.example.clothes_2nd.service.admin.cart.response.CartQuarterlyResponse;
 import com.example.clothes_2nd.service.admin.revenue.response.RevenueResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -35,6 +36,30 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     List<RevenueResponse> calculateRevenue(LocalDate start, LocalDate end);
 
 
-    @Query(value = "select c from Cart as c where c.status.id = 5")
-    List<Cart> ProductsSoldDay();
+    @Query(value = "select c from Cart as c where c.status.id = 5 and c.orderDate = CURRENT_DATE ")
+    List<Cart> productsSoldDay();
+
+    //tính doanh thu trong hôm nay so với ngày hôm qua
+    @Query(value = "SELECT sum (c.totalPrice)" +
+            " FROM Cart c WHERE c.status.id = 5 " +
+            "AND c.orderDate = CURRENT_DATE ")
+    Float percentTheDay();
+    @Query(value = "SELECT sum (c.totalPrice)" +
+            " FROM Cart c WHERE c.status.id = 5 " +
+            "AND c.orderDate = CURRENT_DATE - 1 ")
+    Float percentYesterday();
+
+//    @Query(value = "SELECT new com.example.clothes_2nd.service.admin.cart.response.CartQuarterlyResponse" +
+//            "(YEAR(c.orderDate) , QUARTER(c.orderDate) , coalesce(SUM(c.totalPrice), 0)) " +
+//            "FROM Cart c " +
+//            "WHERE c.status.id = 5 " +
+//            "GROUP BY YEAR(c.orderDate), QUARTER(c.orderDate)")
+
+    @Query(value = "SELECT\n" +
+            "  COALESCE(SUM(CASE WHEN EXTRACT(QUARTER FROM order_date) = 1 THEN total_price ELSE 0 END), 0) AS q1,\n" +
+            "  COALESCE(SUM(CASE WHEN EXTRACT(QUARTER FROM order_date) = 2 THEN total_price ELSE 0 END), 0) AS q2,\n" +
+            "  COALESCE(SUM(CASE WHEN EXTRACT(QUARTER FROM order_date) = 3 THEN total_price ELSE 0 END), 0) AS q3,\n" +
+            "  COALESCE(SUM(CASE WHEN EXTRACT(QUARTER FROM order_date) = 4 THEN total_price ELSE 0 END), 0) AS q4\n" +
+            "FROM Cart WHERE status_id = 5 AND YEAR(order_date) = YEAR(CURRENT_DATE)", nativeQuery = true)
+    CartQuarterlyResponse quarterlyRevenue();
 }

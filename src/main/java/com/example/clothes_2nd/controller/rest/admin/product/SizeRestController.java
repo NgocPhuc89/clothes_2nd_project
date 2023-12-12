@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/sizes")
+@RequestMapping("/api/admin/sizes")
 @AllArgsConstructor
 public class SizeRestController {
     @GetMapping
