@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -31,13 +32,16 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         "AND p.name LIKE CONCAT('%', :#{#request.search}, '%')")
 Page<Product> filterProduct(@Param("request") ProductFilterRequest request, Pageable pageable);
 
-    //Page<Product> findProductBySizeAndPriceBetweenAndCategory_Id(Size size, BigDecimal price, BigDecimal price2, Long category_id, Pageable pageable);
-//    @Query(value = "SELECT p FROM Product p WHERE " +
-//            "(p.name like :search or " +
-//           " p.status like :search or " +
-//            " p.description like :search or " +
-//            "p.category.name like :search)")
-//    Page<Product> searchEverything(String search, Pageable pageable);
+
+    @Query(value = "SELECT p FROM Product p WHERE " +
+            "(p.name LIKE :search OR " +
+            "p.status LIKE :search OR " +
+            "p.description LIKE :search OR " +
+            "p.category.name LIKE :search )")
+    Page<Product> searchEverything(
+            @Param("search") String search,
+            Pageable pageable);
+
 
     @Query(value = "SELECT p FROM Product p WHERE p.paid = false ")
     Page<Product> findAllProduct(Pageable pageable);

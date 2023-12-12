@@ -16,9 +16,9 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class UploadFileService {
-private  final Cloudinary cloudinary;
-private final FileRepository fileRepository;
-private final UploadUtil uploadUtil;
+    private  final Cloudinary cloudinary;
+    private final FileRepository fileRepository;
+    private final UploadUtil uploadUtil;
     public List<File>  saveImage(List<MultipartFile> images) throws IOException {
         List<File> newFiles = new ArrayList<>();
         for (MultipartFile image: images) {
@@ -38,5 +38,4 @@ private final UploadUtil uploadUtil;
 
         return newFiles;
     }
-
 }

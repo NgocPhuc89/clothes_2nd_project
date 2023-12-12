@@ -9,8 +9,11 @@ import com.example.clothes_2nd.model.UserInfo;
 import com.example.clothes_2nd.repository.LocationRegionRepository;
 import com.example.clothes_2nd.repository.UserInfoRepository;
 import com.example.clothes_2nd.repository.UserRepository;
+import com.example.clothes_2nd.service.admin.user.response.UserInfoResponse;
 import com.example.clothes_2nd.service.admin.user.response.UserInfoSaveResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,8 +43,8 @@ public class UserInfoService implements IUserInfoService {
 
 
     @Override
-    public List<UserInfoSaveResponse> getAllUserInfo() {
-        return userInfoRepository.getAllUserInfo();
+    public Page<UserInfoSaveResponse> getAllUserInfo(String search, Pageable pageable) {
+        return userInfoRepository.getAllUserInfo(search, pageable);
     }
 
     @Override
@@ -144,6 +147,12 @@ public class UserInfoService implements IUserInfoService {
     }
 
     @Override
+    public Optional<UserInfoResponse> getUserById(Long id) {
+        return userInfoRepository.getUserById(id);
+    }
+
+
+    @Override
     public void delete(UserInfo userInfo) {
 
     }
@@ -159,4 +168,5 @@ public class UserInfoService implements IUserInfoService {
         }
 
     }
+
 }
