@@ -1,9 +1,13 @@
 package com.example.clothes_2nd.service.admin.cart;
 import com.example.clothes_2nd.repository.CartRepository;
+import com.example.clothes_2nd.service.admin.cart.response.CartAdminResponse;
 import com.example.clothes_2nd.service.admin.cart.response.CartListResponse;
 import com.example.clothes_2nd.service.admin.cart.response.CartQuarterlyResponse;
+import com.example.clothes_2nd.service.admin.product.response.ProductListResponse;
 import com.example.clothes_2nd.util.AppUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,5 +38,34 @@ public class CartService {
 //    tính doanh thu theo quý
     public CartQuarterlyResponse QuarterlyRevenue(){
         return cartRepository.quarterlyRevenue();
+    }
+
+    public List<CartAdminResponse> getAllCartAdmin(){
+        List<CartAdminResponse> result = new ArrayList<>();
+        for (var item : cartRepository.findAll()){
+            CartAdminResponse cartAdminResponse = AppUtil.mapper.map(item, CartAdminResponse.class);
+            result.add(cartAdminResponse);
+        }
+        return result;
+    }
+//
+//    public Pageable<CartAdminResponse> searchCart(Pageable pageable){
+//        Pageable<CartAdminResponse> result = new ArrayList<>();
+//        for (var item : cartRepository.searchCartByNameAndPhone()){
+//            CartAdminResponse c = AppUtil.mapper.map(item, CartAdminResponse.class);
+//
+//            result.add(c);
+//        }
+//        return  result;
+//    }
+
+    public Page<CartAdminResponse> searchNameAndPhone(String search, Pageable pageable) {
+        search = "%" + search + "%";
+        return cartRepository
+                .searchNameAndPhoneByCart(search, pageable)
+                .map(product -> {
+                    var response = AppUtil.mapper.map(product, CartAdminResponse.class);
+                    return response;
+                });
     }
 }

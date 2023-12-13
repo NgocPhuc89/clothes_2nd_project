@@ -42,7 +42,6 @@ public class ProductRestController {
         pageable = PageRequest.of(page, size);
         Page<ProductListResponse>  productListResponses =  productService.findAllWithSearchEveryThingAndPaging(search,pageable);
        return new ResponseEntity<>(productListResponses, HttpStatus.OK);
-
     }
     @GetMapping("/{id}")
     public ProductListResponse findAllProductById(@PathVariable Long id) {

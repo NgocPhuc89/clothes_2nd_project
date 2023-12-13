@@ -11,9 +11,6 @@ import java.time.LocalDate;
 
 public interface CartQuarterlyResponse {
 
-//    private int year;
-//    private int quarter;
-//    private BigDecimal sum;
     BigDecimal getQ1();
     BigDecimal getQ2();
     BigDecimal getQ3();
