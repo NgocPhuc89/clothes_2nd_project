@@ -46,16 +46,7 @@ public class ProductService {
                     return response;
                 });
     }
-
-    public List<ProductListResponse> finAllProducts() {
-        return productRepository.findAll()
-                .stream().map(product -> {
-                    var response = AppUtil.mapper.map(product, ProductListResponse.class);
-                    response.setCategory(product.getCategory().getName());
-                    return response;
-                }).collect(Collectors.toList());
-    }
-
+    
     public ProductListResponse findProductById(Long id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
 
