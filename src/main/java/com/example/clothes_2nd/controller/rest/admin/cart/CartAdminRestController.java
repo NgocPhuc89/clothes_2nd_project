@@ -18,7 +18,9 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/api/admin/cart")
 public class CartAdminRestController {
+
     private final CartService cartService;
+
     @GetMapping("/sold")
     public List<CartListResponse> productsSoldDay(){
         return cartService.ProductsSoldDay();
