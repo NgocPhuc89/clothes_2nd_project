@@ -11,6 +11,7 @@ import com.example.clothes_2nd.repository.UserInfoRepository;
 import com.example.clothes_2nd.repository.UserRepository;
 import com.example.clothes_2nd.service.admin.user.response.UserInfoResponse;
 import com.example.clothes_2nd.service.admin.user.response.UserInfoSaveResponse;
+import com.example.clothes_2nd.util.AppUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -112,6 +113,7 @@ public class UserInfoService implements IUserInfoService {
             User user = new User();
             user.setUsername(userInfoSaveRequest.getUsername());
             user.setPassword("123123");
+
             if (!Objects.equals(userInfoSaveRequest.getAvatarId(), "")) {
                 user.setAvatar(File.builder().id(Long.valueOf(userInfoSaveRequest.getAvatarId())).build());
             }
@@ -167,7 +169,10 @@ public class UserInfoService implements IUserInfoService {
         Optional<UserInfo> userInfoOptional = userInfoRepository.findUserInfoByUserId(userId);
 
         if (userInfoOptional.isPresent()) {
+            assert user != null;
             UserInfo userInfo = userInfoOptional.get();
+            if (!Objects.equals(userInfoUpdateRequest.getAvatarId(), ""))
+                user.setAvatar(File.builder().id(Long.valueOf(userInfoUpdateRequest.getAvatarId())).build());
             userInfo.setUser(user);
             userInfo.setFullName(userInfoUpdateRequest.getFullName());
             userInfo.setEmail(userInfoUpdateRequest.getEmail());
@@ -193,7 +198,7 @@ public class UserInfoService implements IUserInfoService {
         userInfoUpdateResponse.setId(user.getId());
         userInfoUpdateResponse.setUsername(user.getUsername());
         userInfoUpdateResponse.setPassword(user.getPassword());
-        userInfoUpdateResponse.setAvatarId(user.getAvatar().getId().toString());
+        userInfoUpdateResponse.setAvatarId(userInfoUpdateRequest.getAvatarId());
         userInfoUpdateResponse.setFullName(userInfoOptional.get().getFullName());
         userInfoUpdateResponse.setEmail(userInfoOptional.get().getEmail());
         userInfoUpdateResponse.setPhone(userInfoOptional.get().getPhone());
@@ -202,8 +207,9 @@ public class UserInfoService implements IUserInfoService {
         userInfoUpdateResponse.setProvinceName(locationRegion.getProvinceName());
         userInfoUpdateResponse.setDistrictId(locationRegion.getDistrictId());
         userInfoUpdateResponse.setDistrictName(locationRegion.getDistrictName());
-        userInfoUpdateResponse.setWardId(locationRegion.getWardId());
+        userInfoUpdateResponse.setWardId(locationRegion.getWardId());;
         userInfoUpdateResponse.setWardName(locationRegion.getWardName());
+        userInfoUpdateResponse.setAddress(locationRegion.getAddress());
         return userInfoUpdateResponse;
     }
 
@@ -214,7 +220,23 @@ public class UserInfoService implements IUserInfoService {
 
     @Override
     public Optional<UserInfoResponse> getUserById(Long id) {
-        return userInfoRepository.getUserById(id);
+        var userInfo = userInfoRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Source not found")
+        );
+        var userInfoResponse = new UserInfoResponse();
+        userInfoResponse.setUserId(userInfo.getUser().getId());
+        if(userInfo.getLocationRegion() != null && userInfo.getLocationRegion().size() != 0){
+            LocationRegion locationRegion = userInfo.getLocationRegion().get(0);
+            AppUtil.mapper.map(locationRegion, userInfoResponse);
+        }
+        AppUtil.mapper.map(userInfo, userInfoResponse);
+        if(userInfo.getUser().getAvatar() != null){
+            var avatar = userInfo.getUser().getAvatar();
+            userInfoResponse.setAvatarId(String.valueOf(avatar.getId()));
+            userInfoResponse.setAvatarUrl(avatar.getUrl());
+        }
+
+        return Optional.of(userInfoResponse);
     }
 
 
