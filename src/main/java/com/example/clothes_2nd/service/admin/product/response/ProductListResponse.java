@@ -11,6 +11,7 @@ import lombok.Setter;
 
 
         import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -22,6 +23,8 @@ public class ProductListResponse {
     private String name;
     private String description;
     private BigDecimal price;
+    private BigDecimal salesPrice;
+    private Date depositDate;
     private List<SelectOptionRequest> files;
     private String category;
     private Long categoryParentId;

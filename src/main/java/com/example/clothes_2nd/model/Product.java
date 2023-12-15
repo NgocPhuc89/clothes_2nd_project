@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 @Entity
 @AllArgsConstructor
@@ -18,11 +20,15 @@ public class Product {
     private String name;
     private String description;
     private BigDecimal price;
+    private BigDecimal salesPrice;
     private Boolean paid;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<File> files;
 
     private String status;
+    private LocalDate depositDate;
+    private Boolean active;
+
 
     @ManyToOne
     @JoinColumn(name = "category_id")
