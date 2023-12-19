@@ -69,7 +69,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
             "FROM UserInfo AS ui " +
             "JOIN User AS u " +
             "ON ui.user.id = u.id " +
-            "JOIN LocationRegion AS lg " +
+            "LEFT JOIN LocationRegion AS lg " +
             "ON lg.userInfo.id = ui.id " +
             "WHERE ui.id = :id"
     )
