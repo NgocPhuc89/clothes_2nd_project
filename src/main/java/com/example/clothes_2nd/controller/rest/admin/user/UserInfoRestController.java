@@ -62,5 +62,11 @@ public class UserInfoRestController {
         return new ResponseEntity<>(userInfoResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/checkPhone/{phone}")
+    public  ResponseEntity<?> checkExistPhoneByUser(@PathVariable String phone) {
+
+        return new  ResponseEntity<>(userInfoRepository.findByPhone(phone),HttpStatus.OK);
+    }
+
 }
 

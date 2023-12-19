@@ -13,6 +13,8 @@ import lombok.Setter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -43,4 +45,13 @@ public class ProductSaveRequest {
     @NotEmpty(message = "Danh sách tệp không được rỗng")
     private List<@Valid SelectOptionRequest> files;
     private Boolean paid;
+//    private SelectOptionRequest userInfo;
+    private Boolean active;
+    private BigDecimal salesPrice;
+    private LocalDateTime depositDate;
+
+    private String fullName;
+
+    private String phone;
+    private String codeProduct;
 }

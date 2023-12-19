@@ -3,14 +3,15 @@ import com.example.clothes_2nd.service.home.productHome.request.ProductFilterReq
 import com.example.clothes_2nd.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.List;
+
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -23,15 +24,19 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 Page<Product> filterProduct(@Param("request") ProductFilterRequest request, Pageable pageable);
 
 
-    @Query(value = "SELECT p FROM Product p WHERE " +
+    @Query("SELECT p FROM Product p WHERE " +
             "(p.name LIKE %:search% OR " +
             "p.status LIKE %:search%  OR " +
             "p.description LIKE %:search%  OR " +
-            "p.category.name LIKE %:search% and p.paid = false )")
+            "p.category.name LIKE %:search% ) " +
+            "ORDER BY p.id DESC")
     Page<Product> searchEverything(
             @Param("search") String search,
             Pageable pageable);
 
+
+    List<Product> findAllByOrderByIdAsc();
+    List<Product> findAllByOrderByIdDesc();
 
     @Query(value = "SELECT p FROM Product p WHERE p.paid = false ")
     Page<Product> findAllProduct(Pageable pageable);

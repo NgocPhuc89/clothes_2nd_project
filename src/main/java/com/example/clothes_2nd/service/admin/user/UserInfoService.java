@@ -15,6 +15,7 @@ import com.example.clothes_2nd.util.AppUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -259,6 +260,11 @@ public class UserInfoService implements IUserInfoService {
             userRepository.deleteById(userInfoSaveResponse.get().getUserId());
         }
 
+    }
+    @Override
+    public ResponseEntity<?> checkPhoneExist(String phone){
+      Boolean userInfoSaveResponse =   userInfoRepository.existsByPhone(phone);
+        return ResponseEntity.ok(userInfoSaveResponse);
     }
 
 }

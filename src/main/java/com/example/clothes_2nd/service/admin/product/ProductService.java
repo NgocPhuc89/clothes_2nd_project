@@ -1,23 +1,35 @@
 package com.example.clothes_2nd.service.admin.product;
+
 import com.example.clothes_2nd.model.Category;
 import com.example.clothes_2nd.model.File;
 import com.example.clothes_2nd.model.Product;
+import com.example.clothes_2nd.model.UserInfo;
 import com.example.clothes_2nd.repository.CategoryRepository;
 import com.example.clothes_2nd.repository.FileRepository;
+import com.example.clothes_2nd.repository.UserInfoRepository;
 import com.example.clothes_2nd.service.admin.product.request.ProductSaveRequest;
 import com.example.clothes_2nd.service.admin.product.request.SelectOptionRequest;
 import com.example.clothes_2nd.service.admin.product.response.ProductListResponse;
 import com.example.clothes_2nd.repository.ProductRepository;
+import com.example.clothes_2nd.service.admin.user.UserInfoService;
+import com.example.clothes_2nd.service.admin.user.requets.UserInfoSaveRequest;
 import com.example.clothes_2nd.util.AppUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.Normalizer;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Sort;
 
 
 @Service
@@ -27,6 +39,8 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final FileRepository fileRepository;
     private final CategoryRepository categoryRepository;
+    private final UserInfoRepository userInfoRepository;
+    private final UserInfoService userInfoService;
 
 
     public Page<ProductListResponse> findAllWithSearchEveryThingAndPaging(String search, Pageable pageable) {
@@ -36,9 +50,14 @@ public class ProductService {
                 .map(product -> {
                     var response = AppUtil.mapper.map(product, ProductListResponse.class);
                     response.setCategory(product.getCategory().getName());
+                    if (product.getUserInfo() != null){
+
+                        response.setFullName(product.getUserInfo().getFullName());
+                    }
                     return response;
                 });
     }
+
     /// chỉ render ra những product có paid == false còn lại thì không
     public ProductListResponse findProductById(Long id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
@@ -47,6 +66,9 @@ public class ProductService {
             Product product = optionalProduct.get();
             ProductListResponse productListResponse = AppUtil.mapper.map(product, ProductListResponse.class);
             productListResponse.setSize(product.getSize());
+            productListResponse.setPhone(product.getUserInfo().getPhone());
+            productListResponse.setFullName(product.getUserInfo().getFullName());
+//            productListResponse.setUserInfo(product.getUserInfo().getPhone());
 
             // Lấy Category của Product
             Category productCategory = product.getCategory();
@@ -64,7 +86,7 @@ public class ProductService {
                     }
                 }
             }
-            
+
             List<SelectOptionRequest> fileSelectOptions = product.getFiles().stream()
                     .map(file -> {
                         SelectOptionRequest selectOption = new SelectOptionRequest();
@@ -85,32 +107,81 @@ public class ProductService {
 
     public ProductListResponse createProducts(ProductSaveRequest request) {
         var newProduct = AppUtil.mapper.map(request, Product.class);
+        if (!request.getPhone().isBlank()) {
+            Optional<UserInfo> userInfoOptional = userInfoRepository.findByPhone(request.getPhone());
+
+            if (userInfoOptional.isEmpty()) {
+                UserInfo userInfo = new UserInfo();
+                userInfo.setPhone(request.getPhone());
+                userInfo.setFullName(request.getFullName());
+                userInfoRepository.save(userInfo);
+                newProduct.setUserInfo(userInfo);
+            } else {
+                UserInfo userInfo = userInfoOptional.get();
+                newProduct.setUserInfo(userInfo);
+            }
+        }
+
         Long categoryId = request.getCategory().getId();
-        Category category = categoryRepository.findById(categoryId).get();
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
+
+
+
         newProduct.setFiles(null);
         newProduct.setCategory(category);
         newProduct.setPaid(false);
+        newProduct.setActive(false);
+        newProduct.setDepositDate(LocalDateTime.now());
+        // Tạo mã sản phẩm từ chữ cái đầu của category và ngày tháng năm
+        String productCode = generateProductCode(category, newProduct.getDepositDate());
+        newProduct.setCodeProduct(productCode); // Gán mã sản phẩm vào trường codeProduct
+
         productRepository.save(newProduct);
+
         var images = fileRepository.findAllById(request.getFiles().stream().map(e -> Long.valueOf(e.getId())).collect(Collectors.toList()));
 
-
-        for (var image: images) {
+        for (var image : images) {
             image.setProduct(newProduct);
         }
+
         fileRepository.saveAll(images);
-
-        ProductListResponse productListResponse = new ProductListResponse();
-        productListResponse.setId(newProduct.getId());
-        productListResponse.setDescription(newProduct.getDescription());
-        productListResponse.setName(newProduct.getName());
-        productListResponse.setPrice(newProduct.getPrice());
-        productListResponse.setSize(newProduct.getSize());
-        productListResponse.setStatus(newProduct.getStatus());
+        ProductListResponse productListResponse = AppUtil.mapper.map(newProduct, ProductListResponse.class);
         productListResponse.setCategory(newProduct.getCategory().getName());
-
+        if (!request.getPhone().isBlank()) {
+            productListResponse.setFullName(request.getFullName());
+        }
 
         return productListResponse;
     }
+
+    // Phương thức tạo mã sản phẩm từ chữ cái đầu của category và ngày tháng năm
+    // Phương thức tạo mã sản phẩm từ chữ cái đầu của category và ngày tháng năm
+    private String generateProductCode(Category category, LocalDateTime depositDate) {
+        String categoryInitial = getCategoryInitial(category.getName());
+        String datePart = formatDateTime(depositDate);
+        return categoryInitial + datePart;
+    }
+
+    // Phương thức định dạng ngày tháng năm giờ phút giây
+    private String formatDateTime(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        return Normalizer.normalize(dateTime.format(formatter), Normalizer.Form.NFD)
+                .replaceAll("[^\\p{ASCII}]", "");
+    }
+
+
+    // Phương thức lấy chữ cái đầu của category (viết thường) mà không lấy dấu
+    private String getCategoryInitial(String category) {
+        if (category != null && !category.isEmpty()) {
+            String normalizedCategory = Normalizer.normalize(category, Normalizer.Form.NFD);
+            // Loại bỏ dấu diacritic và chuyển về chữ thường
+            return normalizedCategory.replaceAll("[^\\p{ASCII}]", "").substring(0, 1).toLowerCase();
+        } else {
+            throw new IllegalArgumentException("Category must not be null or empty");
+        }
+    }
+
+
 
 
     public ProductListResponse updateProduct(ProductSaveRequest request, Long id) {
@@ -126,6 +197,7 @@ public class ProductService {
         updatedProduct.setId(id);
         updatedProduct.setFiles(null);
         updatedProduct.setPaid(false);
+        updatedProduct.setDepositDate(LocalDateTime.now());
         updatedProduct.setCategory(category);
         productRepository.save(updatedProduct);
 
@@ -140,8 +212,10 @@ public class ProductService {
         return productListResponse;
     }
 
+
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+
 
 }

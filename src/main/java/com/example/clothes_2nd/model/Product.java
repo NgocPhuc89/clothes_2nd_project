@@ -1,11 +1,13 @@
 package com.example.clothes_2nd.model;
 
 import com.example.clothes_2nd.model.emun.Size;
+import com.example.clothes_2nd.service.admin.user.response.UserInfoSaveResponse;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 @Entity
@@ -27,7 +29,7 @@ public class Product {
     private List<File> files;
 
     private String status;
-    private LocalDate depositDate;
+    private LocalDateTime depositDate;
     private Boolean active;
 
 
@@ -47,4 +49,6 @@ public class Product {
     @OneToMany(mappedBy = "product" , cascade = CascadeType.ALL)
     @JsonIgnore
     private List<CartDetail> cardDetail;
+    private String codeProduct;
+
 }

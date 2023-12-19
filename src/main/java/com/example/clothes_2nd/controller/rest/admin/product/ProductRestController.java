@@ -33,19 +33,20 @@ public class ProductRestController {
     @GetMapping
     public ResponseEntity<?> getAllProducts(@RequestParam(defaultValue = "") String search,
                                             @RequestParam(defaultValue = "0") int page,
-                                            @RequestParam(defaultValue = "10") int size) {
+                                            @RequestParam(defaultValue = "10") int size
+                                            ) {
         Pageable pageable;
         if (page < 0) {
             page = 0;
         }
 
-        pageable = PageRequest.of(page, size);
+        pageable = PageRequest.of(page, size );
         Page<ProductListResponse>  productListResponses =  productService.findAllWithSearchEveryThingAndPaging(search,pageable);
-       return new ResponseEntity<>(productListResponses, HttpStatus.OK);
+        return new ResponseEntity<>(productListResponses, HttpStatus.OK);
     }
     @GetMapping("/{id}")
     public ProductListResponse findAllProductById(@PathVariable Long id) {
-      return  productService.findProductById(id);
+        return  productService.findProductById(id);
 
     }
     @PostMapping
