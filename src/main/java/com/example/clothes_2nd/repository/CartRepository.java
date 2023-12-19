@@ -67,6 +67,10 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
             " from Cart  c  where (c.name like :search or  c.phone like :search) AND (:statusId is null OR c.status.id = :statusId) AND c.status.id != 1")
     Page<Cart> searchNameAndPhoneByCart(@Param("search") String search,Long statusId, Pageable pageable);
 
+
     //tim status theo id
     List<Cart> findCartByStatusId(Long status_id);
+
+    List<Cart> findCartByUserInfoId(Long userInfo_id);
+    
 }

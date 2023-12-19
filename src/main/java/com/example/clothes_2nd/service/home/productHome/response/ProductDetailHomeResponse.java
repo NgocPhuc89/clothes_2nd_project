@@ -21,4 +21,5 @@ public class ProductDetailHomeResponse {
     private String description;
     private Size size;
     private List<String> listFile;
+    private String status;
 }

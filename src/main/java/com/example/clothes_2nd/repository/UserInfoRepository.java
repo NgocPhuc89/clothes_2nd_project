@@ -118,5 +118,5 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
 
     Boolean existsByPhone(String phone);
 
-
+    UserInfo findUserInfoByEmail(String email);
 }
