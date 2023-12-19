@@ -12,6 +12,7 @@ import com.example.clothes_2nd.service.admin.user.requets.UserSaveRequest;
 import com.example.clothes_2nd.service.home.userHome.request.LoginGoogleSaveRequest;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class AuthResController {
     private final FileRepository fileRepository;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserSaveRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody UserSaveRequest request) {
         //trả ra được JWT
         var users = userRepository.findAll();
         for(var item : users){

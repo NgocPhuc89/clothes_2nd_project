@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class CartAdminResponse {
@@ -25,15 +26,7 @@ public class CartAdminResponse {
     private BigDecimal shippingFee;
     private Status status;
     private LocationRegion locationRegion;
+    private List<String> productNames;
 
-    public CartAdminResponse(Long id, String name, BigDecimal totalPrice, LocalDate orderDate, String phone, BigDecimal shippingFee, Status status, LocationRegion locationRegion) {
-        this.id = id;
-        this.name = name;
-        this.totalPrice = totalPrice;
-        this.orderDate = orderDate;
-        this.phone = phone;
-        this.shippingFee = shippingFee;
-        this.status = status;
-        this.locationRegion = locationRegion;
-    }
+
 }

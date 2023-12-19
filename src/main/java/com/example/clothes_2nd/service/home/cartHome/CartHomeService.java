@@ -168,7 +168,6 @@ public class CartHomeService {
                 }
             }
         }
-//        result.setTotal(cart.getTotalPrice());
         return result;
     }
 

@@ -58,5 +58,6 @@ public class UserInfoRestController {
         Optional<UserInfoResponse> userInfoResponse = iUserInfoService.getUserById(id);
         return new ResponseEntity<>(userInfoResponse, HttpStatus.OK);
     }
+
 }
 

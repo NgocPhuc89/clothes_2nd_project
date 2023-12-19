@@ -20,6 +20,8 @@ import java.util.Optional;
 public interface CartRepository extends JpaRepository<Cart, Long> {
     Optional<Cart> findByUserInfo_IdAndStatus_Id(Long userInfo_id, Long status_id);
 
+    Optional<Cart> findById(Long id);
+
     Optional<Cart> findByStatus_Id(Long status_id);
 
 //    @Query( value = "SELECT  SUM(orderDate) FROM Cart c WHERE" + "(COALESCE(:#{#request.id}, c.id)=c.id) +
@@ -52,13 +54,7 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
             " FROM Cart c WHERE c.status.id = 5 " +
             "AND c.orderDate = CURRENT_DATE - 1 ")
     Float percentYesterday();
-
-//    @Query(value = "SELECT new com.example.clothes_2nd.service.admin.cart.response.CartQuarterlyResponse" +
-//            "(YEAR(c.orderDate) , QUARTER(c.orderDate) , coalesce(SUM(c.totalPrice), 0)) " +
-//            "FROM Cart c " +
-//            "WHERE c.status.id = 5 " +
-//            "GROUP BY YEAR(c.orderDate), QUARTER(c.orderDate)")
-
+    //doanh thu theo quy
     @Query(value = "SELECT\n" +
             "  COALESCE(SUM(CASE WHEN EXTRACT(QUARTER FROM order_date) = 1 THEN total_price ELSE 0 END), 0) AS q1,\n" +
             "  COALESCE(SUM(CASE WHEN EXTRACT(QUARTER FROM order_date) = 2 THEN total_price ELSE 0 END), 0) AS q2,\n" +
@@ -67,13 +63,10 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
             "FROM Cart WHERE status_id = 5 AND YEAR(order_date) = YEAR(CURRENT_DATE)", nativeQuery = true)
     CartQuarterlyResponse quarterlyRevenue();
 
-//    @Query(value = "SELECT new com.example.clothes_2nd.service.admin.revenue.response.RevenueResponse" +
-//            "(SUM(c.totalPrice), DATE(c.orderDate)) FROM Cart c WHERE " +
-//            "DATE_FORMAT(c.orderDate, '%Y-%m-%d') " +
-//            " BETWEEN DATE_FORMAT(:start, '%Y-%m-%d') AND DATE_FORMAT(:end, '%Y-%m-%d') group by DATE (c.orderDate) ")
+    @Query(value = "select c" +
+            " from Cart  c  where (c.name like :search or  c.phone like :search) AND (:statusId is null OR c.status.id = :statusId) AND c.status.id != 1")
+    Page<Cart> searchNameAndPhoneByCart(@Param("search") String search,Long statusId, Pageable pageable);
 
-    @Query(value = "select new com.example.clothes_2nd.service.admin.cart.response.CartAdminResponse(c.id, c.name,c.totalPrice, c.orderDate, c.phone, c.shippingFee, c.status, c.locationRegion)" +
-            " from Cart  c where c.name like :search or  c.phone like :search")
-    Page<CartAdminResponse> searchNameAndPhoneByCart(@Param("search") String search, Pageable pageable);
-
+    //tim status theo id
+    List<Cart> findCartByStatusId(Long status_id);
 }

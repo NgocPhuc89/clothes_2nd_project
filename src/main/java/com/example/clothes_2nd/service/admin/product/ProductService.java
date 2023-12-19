@@ -145,13 +145,8 @@ public class ProductService {
         return productListResponse;
     }
 
-
-
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
-
-
-
 
 }
