@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -24,6 +26,7 @@ public class UserInfoRestController {
         this.iUserInfoService = iUserInfoService;
         this.userInfoRepository = userInfoRepository;
     }
+
 
 
     @GetMapping
@@ -58,5 +61,17 @@ public class UserInfoRestController {
         Optional<UserInfoResponse> userInfoResponse = iUserInfoService.getUserById(id);
         return new ResponseEntity<>(userInfoResponse, HttpStatus.OK);
     }
+    @GetMapping("/sortAll")
+    public ResponseEntity<?> sortAllListUserInfo(
+            @RequestParam(defaultValue = "desc") String order,
+            @RequestParam(defaultValue = "") String fullName,
+            @RequestParam(defaultValue = "") String email,
+            @RequestParam(defaultValue = "") String phone,
+            @RequestParam(defaultValue = "") String gender,
+            @RequestParam(defaultValue = "id") String sortBy) {
+        List<UserInfoSaveResponse> sortedUserInfos = iUserInfoService.sortAllListUserInfo(order, sortBy, fullName, email, phone, gender);
+        return new ResponseEntity<>(sortedUserInfos, HttpStatus.OK);
+    }
+
 }
 

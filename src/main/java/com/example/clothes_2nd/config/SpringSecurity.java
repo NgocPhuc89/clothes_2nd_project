@@ -30,6 +30,8 @@ public class SpringSecurity {
                         .requestMatchers("/api/auth/**").permitAll()
 //                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
                         .requestMatchers("/api/admin/**").permitAll()
+
+
                         .anyRequest().authenticated());
 
         

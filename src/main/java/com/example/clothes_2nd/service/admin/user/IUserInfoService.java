@@ -7,7 +7,9 @@ import com.example.clothes_2nd.service.admin.user.response.UserInfoResponse;
 import com.example.clothes_2nd.service.admin.user.response.UserInfoSaveResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -22,4 +24,6 @@ public interface IUserInfoService extends IGeneralService<UserInfo,Long> {
 
     Optional<UserInfoResponse> getUserById(Long id);
 
+
+    List<UserInfoSaveResponse> sortAllListUserInfo(String order, String sortBy, String fullName, String email, String phone, String gender);
 }

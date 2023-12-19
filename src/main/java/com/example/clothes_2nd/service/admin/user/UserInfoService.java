@@ -239,6 +239,10 @@ public class UserInfoService implements IUserInfoService {
         return Optional.of(userInfoResponse);
     }
 
+    @Override
+    public List<UserInfoSaveResponse> sortAllListUserInfo(String order, String sortBy, String fullName, String email, String phone, String gender) {
+        return null;
+    }
 
     @Override
     public void delete(UserInfo userInfo) {
