@@ -24,10 +24,10 @@ Page<Product> filterProduct(@Param("request") ProductFilterRequest request, Page
 
 
     @Query(value = "SELECT p FROM Product p WHERE " +
-            "(p.name LIKE :search OR " +
-            "p.status LIKE :search OR " +
-            "p.description LIKE :search OR " +
-            "p.category.name LIKE :search )")
+            "(p.name LIKE %:search% OR " +
+            "p.status LIKE %:search%  OR " +
+            "p.description LIKE %:search%  OR " +
+            "p.category.name LIKE %:search% and p.paid = false )")
     Page<Product> searchEverything(
             @Param("search") String search,
             Pageable pageable);

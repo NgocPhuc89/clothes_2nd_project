@@ -2,25 +2,18 @@ package com.example.clothes_2nd.service.admin.product;
 import com.example.clothes_2nd.model.Category;
 import com.example.clothes_2nd.model.File;
 import com.example.clothes_2nd.model.Product;
-import com.example.clothes_2nd.model.emun.Size;
 import com.example.clothes_2nd.repository.CategoryRepository;
 import com.example.clothes_2nd.repository.FileRepository;
-import com.example.clothes_2nd.service.admin.category.response.CategoryAdminListResponse;
 import com.example.clothes_2nd.service.admin.product.request.ProductSaveRequest;
 import com.example.clothes_2nd.service.admin.product.request.SelectOptionRequest;
 import com.example.clothes_2nd.service.admin.product.response.ProductListResponse;
 import com.example.clothes_2nd.repository.ProductRepository;
 import com.example.clothes_2nd.util.AppUtil;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,7 +39,7 @@ public class ProductService {
                     return response;
                 });
     }
-    
+    /// chỉ render ra những product có paid == false còn lại thì không
     public ProductListResponse findProductById(Long id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
 
@@ -96,6 +89,7 @@ public class ProductService {
         Category category = categoryRepository.findById(categoryId).get();
         newProduct.setFiles(null);
         newProduct.setCategory(category);
+        newProduct.setPaid(false);
         productRepository.save(newProduct);
         var images = fileRepository.findAllById(request.getFiles().stream().map(e -> Long.valueOf(e.getId())).collect(Collectors.toList()));
 
@@ -131,6 +125,7 @@ public class ProductService {
         Category category = categoryRepository.findById(categoryId).get();
         updatedProduct.setId(id);
         updatedProduct.setFiles(null);
+        updatedProduct.setPaid(false);
         updatedProduct.setCategory(category);
         productRepository.save(updatedProduct);
 
@@ -145,13 +140,8 @@ public class ProductService {
         return productListResponse;
     }
 
-
-
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
-
-
-
 
 }

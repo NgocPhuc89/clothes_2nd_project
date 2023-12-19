@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,14 +50,24 @@ public class CartAdminRestController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchNameAndPhone(@RequestParam(defaultValue = "") String search, @RequestParam(defaultValue = "0") int page,
-                                                @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable;
-        if (page < 0) {
-            page = 0;
-        }
-        pageable = PageRequest.of(page, size);
-        Page<CartAdminResponse> cartAdminResponses = cartService.searchNameAndPhone(search, pageable);
+    public ResponseEntity<?> searchNameAndPhone(@RequestParam(defaultValue = "") String search,
+                                                @RequestParam(defaultValue = "") String statusId,
+                                                Pageable pageable) {
+
+        Page<CartAdminResponse> cartAdminResponses = cartService.searchNameAndPhone(search,statusId, pageable);
         return new ResponseEntity<>(cartAdminResponses, HttpStatus.OK);
+    }
+
+    @PutMapping()
+    public ResponseEntity<?> updateStatusOfCart(@RequestParam("cartId") String cartIdStr, @RequestParam("statusId") String statusIdStr){
+        Long cartId = Long.parseLong(cartIdStr);
+        Long statusId = Long.parseLong(statusIdStr);
+        CartAdminResponse cartAdminResponse = cartService.updateStatus(cartId, statusId);
+        return new ResponseEntity<>(cartAdminResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/status/{id}")
+    public List<CartAdminResponse> getStatusById(@PathVariable(required = false) Long id){
+        return cartService.getStatusById(id);
     }
 }

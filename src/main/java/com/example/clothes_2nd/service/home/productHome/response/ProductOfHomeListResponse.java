@@ -19,4 +19,5 @@ public class ProductOfHomeListResponse {
     private BigDecimal price;
     private Size size;
     private String imageUrl;
+    private String status;
 }

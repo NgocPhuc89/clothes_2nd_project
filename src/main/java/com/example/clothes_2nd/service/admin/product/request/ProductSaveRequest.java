@@ -42,4 +42,5 @@ public class ProductSaveRequest {
 
     @NotEmpty(message = "Danh sách tệp không được rỗng")
     private List<@Valid SelectOptionRequest> files;
+    private Boolean paid;
 }

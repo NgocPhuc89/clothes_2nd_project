@@ -33,8 +33,6 @@ public class SpringSecurity {
 
 
                         .anyRequest().authenticated());
-
-        
         return http.build();
     }
 
