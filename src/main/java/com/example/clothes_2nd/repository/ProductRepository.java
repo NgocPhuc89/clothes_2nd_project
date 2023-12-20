@@ -28,15 +28,11 @@ Page<Product> filterProduct(@Param("request") ProductFilterRequest request, Page
             "(p.name LIKE %:search% OR " +
             "p.status LIKE %:search%  OR " +
             "p.description LIKE %:search%  OR " +
-            "p.category.name LIKE %:search% ) " +
-            "ORDER BY p.id DESC")
+            "p.category.name LIKE %:search% ) ")
+
     Page<Product> searchEverything(
             @Param("search") String search,
             Pageable pageable);
-
-
-    List<Product> findAllByOrderByIdAsc();
-    List<Product> findAllByOrderByIdDesc();
 
     @Query(value = "SELECT p FROM Product p WHERE p.paid = false ")
     Page<Product> findAllProduct(Pageable pageable);

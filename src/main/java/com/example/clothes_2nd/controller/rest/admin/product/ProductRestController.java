@@ -31,16 +31,9 @@ public class ProductRestController {
 
 
     @GetMapping
-    public ResponseEntity<?> getAllProducts(@RequestParam(defaultValue = "") String search,
-                                            @RequestParam(defaultValue = "0") int page,
-                                            @RequestParam(defaultValue = "10") int size
+    public ResponseEntity<?> getAllProducts(@RequestParam(defaultValue = "") String search,Pageable pageable
                                             ) {
-        Pageable pageable;
-        if (page < 0) {
-            page = 0;
-        }
 
-        pageable = PageRequest.of(page, size );
         Page<ProductListResponse>  productListResponses =  productService.findAllWithSearchEveryThingAndPaging(search,pageable);
         return new ResponseEntity<>(productListResponses, HttpStatus.OK);
     }

@@ -12,25 +12,17 @@ import com.example.clothes_2nd.service.admin.product.request.SelectOptionRequest
 import com.example.clothes_2nd.service.admin.product.response.ProductListResponse;
 import com.example.clothes_2nd.repository.ProductRepository;
 import com.example.clothes_2nd.service.admin.user.UserInfoService;
-import com.example.clothes_2nd.service.admin.user.requets.UserInfoSaveRequest;
 import com.example.clothes_2nd.util.AppUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import java.text.Normalizer;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.springframework.data.domain.Sort;
-
 
 @Service
 @AllArgsConstructor
@@ -121,12 +113,8 @@ public class ProductService {
                 newProduct.setUserInfo(userInfo);
             }
         }
-
         Long categoryId = request.getCategory().getId();
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
-
-
-
         newProduct.setFiles(null);
         newProduct.setCategory(category);
         newProduct.setPaid(false);
@@ -155,31 +143,30 @@ public class ProductService {
     }
 
     // Phương thức tạo mã sản phẩm từ chữ cái đầu của category và ngày tháng năm
-    // Phương thức tạo mã sản phẩm từ chữ cái đầu của category và ngày tháng năm
     private String generateProductCode(Category category, LocalDateTime depositDate) {
         String categoryInitial = getCategoryInitial(category.getName());
         String datePart = formatDateTime(depositDate);
         return categoryInitial + datePart;
     }
 
-    // Phương thức định dạng ngày tháng năm giờ phút giây
+    // Phương thức định dạng ngày tháng năm giờ phút giây (và mili giây)
     private String formatDateTime(LocalDateTime dateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
         return Normalizer.normalize(dateTime.format(formatter), Normalizer.Form.NFD)
                 .replaceAll("[^\\p{ASCII}]", "");
     }
-
 
     // Phương thức lấy chữ cái đầu của category (viết thường) mà không lấy dấu
     private String getCategoryInitial(String category) {
         if (category != null && !category.isEmpty()) {
             String normalizedCategory = Normalizer.normalize(category, Normalizer.Form.NFD);
-            // Loại bỏ dấu diacritic và chuyển về chữ thường
-            return normalizedCategory.replaceAll("[^\\p{ASCII}]", "").substring(0, 1).toLowerCase();
+            // Loại bỏ dấu diacritic và chuyển về chữ hoa
+            return normalizedCategory.replaceAll("[^\\p{ASCII}]", "").substring(0, 1).toUpperCase();
         } else {
             throw new IllegalArgumentException("Category must not be null or empty");
         }
     }
+
 
 
 
