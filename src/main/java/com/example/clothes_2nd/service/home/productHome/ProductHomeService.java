@@ -1,4 +1,5 @@
 package com.example.clothes_2nd.service.home.productHome;
+import com.example.clothes_2nd.model.Product;
 import com.example.clothes_2nd.model.emun.Size;
 import com.example.clothes_2nd.service.admin.product.response.ProductListResponse;
 import com.example.clothes_2nd.service.home.productHome.request.ProductFilterRequest;
@@ -26,11 +27,11 @@ public class ProductHomeService {
     public Page<ProductOfHomeListResponse> findAll(Pageable pageable) {
         return productRepository.findAllProduct(pageable)
                 .map(product -> {
-                    var result = AppUtil.mapper.map(product, ProductOfHomeListResponse.class);
-                    result.setImageUrl(product.getFiles().size() > 0 ?
-                            product.getFiles().get(0).getUrl() : "");
+                        var result = AppUtil.mapper.map(product, ProductOfHomeListResponse.class);
+                        result.setImageUrl(product.getFiles().size() > 0 ?
+                        product.getFiles().get(0).getUrl() : "");
                     return result;
-                });
+               });
     }
 
     public Optional<ProductDetailHomeResponse> productDetail(Long id) {
