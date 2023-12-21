@@ -17,6 +17,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.io.DataInput;
 import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -58,11 +60,11 @@ public class ProductService {
             Product product = optionalProduct.get();
             ProductListResponse productListResponse = AppUtil.mapper.map(product, ProductListResponse.class);
             productListResponse.setSize(product.getSize());
-            productListResponse.setPhone(product.getUserInfo().getPhone());
-            productListResponse.setFullName(product.getUserInfo().getFullName());
-//            productListResponse.setUserInfo(product.getUserInfo().getPhone());
+            productListResponse.setPhone(product.getUserInfo() != null ? product.getUserInfo().getPhone() : null);
+            productListResponse.setFullName(product.getUserInfo() != null ? product.getUserInfo().getFullName() : null);
 
-            // Lấy Category của Product
+
+
             Category productCategory = product.getCategory();
 
             if (productCategory != null) {
@@ -172,6 +174,8 @@ public class ProductService {
 
 
     public ProductListResponse updateProduct(ProductSaveRequest request, Long id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Product ID not valid"));
+
         List<File> existingImages = fileRepository.findByProductId(id);
         for (File existingImage : existingImages) {
             existingImage.setProduct(null);
@@ -183,9 +187,10 @@ public class ProductService {
         Category category = categoryRepository.findById(categoryId).get();
         updatedProduct.setId(id);
         updatedProduct.setFiles(null);
-        updatedProduct.setPaid(false);
-        updatedProduct.setDepositDate(LocalDateTime.now());
+        updatedProduct.setUserInfo(product.getUserInfo());
         updatedProduct.setCategory(category);
+        updatedProduct.setDepositDate(request.getDepositDate());
+        updatedProduct.setCodeProduct(request.getCodeProduct());
         productRepository.save(updatedProduct);
 
         List<File> images = fileRepository.findAllById(request.getFiles().stream().map(e -> Long.valueOf(e.getId())).collect(Collectors.toList()));
@@ -193,8 +198,14 @@ public class ProductService {
             image.setProduct(updatedProduct);
         }
         fileRepository.saveAll(images);
+
         ProductListResponse productListResponse = AppUtil.mapper.map(updatedProduct, ProductListResponse.class);
+
         productListResponse.setCategory(updatedProduct.getCategory().getName());
+        if (!productListResponse.getPhone().isBlank()) {
+            productListResponse.setFullName(updatedProduct.getUserInfo().getFullName());
+        }
+
 
         return productListResponse;
     }

@@ -48,7 +48,7 @@ public class ProductRestController {
 
         return new ResponseEntity<>(productListResponse, HttpStatus.CREATED);
     }
-    @PutMapping ("/{id}")
+    @PatchMapping ("/{id}")
     public ResponseEntity<?> updateProduct(@RequestBody ProductSaveRequest request, @PathVariable Long id) {
         ProductListResponse productListResponse =   productService.updateProduct(request,id);
         return new ResponseEntity<>(productListResponse, HttpStatus.OK);
