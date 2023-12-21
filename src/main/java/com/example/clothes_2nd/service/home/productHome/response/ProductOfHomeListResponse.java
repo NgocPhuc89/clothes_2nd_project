@@ -21,4 +21,5 @@ public class ProductOfHomeListResponse {
     private Size size;
     private String imageUrl;
     private String status;
+    private Boolean paid;
 }

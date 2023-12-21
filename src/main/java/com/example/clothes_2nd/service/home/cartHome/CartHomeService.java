@@ -113,7 +113,6 @@ public class CartHomeService {
             cartDetail.setProduct(productDetailHome);
             result.getListCartDetail().add(cartDetail);
         }
-
         return result;
     }
 
@@ -159,7 +158,8 @@ public class CartHomeService {
                     cartDetailRepository.save(cartDetail);
                 }
             }
-            result.setTotal(cart.getTotalPrice());
+            result.setUsername(cart.getUserInfo().getUser().getUsername());
+            result.setPhone(cart.getUserInfo().getPhone());
             return result;
         }
         return null;

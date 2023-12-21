@@ -2,6 +2,7 @@ package com.example.clothes_2nd.controller.rest.home.userInfo;
 
 import com.example.clothes_2nd.service.admin.user.response.UserInfoResponse;
 import com.example.clothes_2nd.service.home.cartHome.response.CartHomeByUserResponse;
+import com.example.clothes_2nd.service.home.productHome.response.ProductOfHomeListResponse;
 import com.example.clothes_2nd.service.home.userInfoHome.UserInfoHomeService;
 import com.example.clothes_2nd.service.home.userInfoHome.request.UserInfoHomeSaveRequest;
 import com.example.clothes_2nd.service.home.userInfoHome.response.UserInfoHomeResponse;
@@ -24,5 +25,10 @@ public class UserInfoHomeResController {
     @GetMapping("/showCartByUser")
     public List<CartHomeByUserResponse> showCartByUser(){
         return userInfoHomeService.showCartByUser();
+    }
+
+    @GetMapping("/showProductByUser")
+    public List<ProductOfHomeListResponse> showProductByUser(){
+        return userInfoHomeService.showProductByUser();
     }
 }

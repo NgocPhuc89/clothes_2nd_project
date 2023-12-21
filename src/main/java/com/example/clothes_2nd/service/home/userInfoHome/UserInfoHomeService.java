@@ -1,9 +1,6 @@
 package com.example.clothes_2nd.service.home.userInfoHome;
 
-import com.example.clothes_2nd.repository.CartDetailRepository;
-import com.example.clothes_2nd.repository.CartRepository;
-import com.example.clothes_2nd.repository.ProductRepository;
-import com.example.clothes_2nd.repository.UserInfoRepository;
+import com.example.clothes_2nd.repository.*;
 import com.example.clothes_2nd.service.currentUsername.CurrentUsername;
 import com.example.clothes_2nd.service.home.cartDetailHome.response.CartDetailHomeByUserResponse;
 import com.example.clothes_2nd.service.home.cartDetailHome.response.CartDetailHomeResponse;
@@ -26,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -36,6 +34,7 @@ public class UserInfoHomeService implements UserDetailsService {
     private final CartDetailRepository cartDetailRepository;
     private final ProductRepository productRepository;
     private final PasswordEncoder passwordEncoder;
+    private final StatusRepository statusRepository;
     public UserInfoHomeResponse findByUserInfo() {
         CurrentUsername currentUsername = new CurrentUsername();
         String email = currentUsername.getCurrentUsername();
@@ -59,21 +58,43 @@ public class UserInfoHomeService implements UserDetailsService {
             var userInfo = userInfoRepository.findUserInfoByEmail(email);
             if(userInfoRepository.existsByEmailIgnoreCase(email)){
                 for(var cart : cartRepository.findCartByUserInfoId(userInfo.getId())){
-                    var cartByUser = AppUtil.mapper.map(cart, CartHomeByUserResponse.class);
-                    cartByUser.setStatusId(cart.getStatus().getId());
-                    cartByUser.setTotalCart(cart.getTotalPrice().add(cart.getShippingFee()));
-                    for (var cartDetail : cartDetailRepository.findCartDetailByCartId(cart.getId())){
-                        var cartDetailByUser = AppUtil.mapper.map(cartDetail, CartDetailHomeByUserResponse.class);
-                        cartByUser.getCartDetailList().add(cartDetailByUser);
-                        var product = productRepository.findById(cartDetail.getProduct().getId());
-                        var productDetail = AppUtil.mapper.map(product, ProductOfHomeListResponse.class);
-                        productDetail.setImageUrl(product.get().getFiles().size() > 0 ? product.get().getFiles().get(0).getUrl() : "");
-                        cartDetailByUser.setProduct(productDetail);
+                    if(cart.getStatus().getId() != 1L){
+                        var cartByUser = AppUtil.mapper.map(cart, CartHomeByUserResponse.class);
+                        cartByUser.setStatusId(cart.getStatus().getId());
+                        cartByUser.setTotalCart(cart.getTotalPrice().add(cart.getShippingFee()));
+                        for (var cartDetail : cartDetailRepository.findCartDetailByCartId(cart.getId())){
+                            var cartDetailByUser = AppUtil.mapper.map(cartDetail, CartDetailHomeByUserResponse.class);
+                            cartByUser.getCartDetailList().add(cartDetailByUser);
+                            var product = productRepository.findById(cartDetail.getProduct().getId());
+                            var productDetail = AppUtil.mapper.map(product, ProductOfHomeListResponse.class);
+                            productDetail.setImageUrl(product.get().getFiles().size() > 0 ? product.get().getFiles().get(0).getUrl() : "");
+                            cartDetailByUser.setProduct(productDetail);
+                        }
+                        result.add(cartByUser);
                     }
-                    result.add(cartByUser);
                 }
             }
             return  result;
+        } else {
+            System.out.println("User is not authenticated");
+        }
+        return null;
+    }
+
+    public List<ProductOfHomeListResponse> showProductByUser(){
+        CurrentUsername currentUsername = new CurrentUsername();
+        String email = currentUsername.getCurrentUsername();
+        if (email != null) {
+            List<ProductOfHomeListResponse> result = new ArrayList<>();
+            var userInfo = userInfoRepository.findUserInfoByEmail(email);
+            if(userInfoRepository.existsByEmailIgnoreCase(email)){
+                for(var product : productRepository.findProductByUserInfoId(userInfo.getId())){
+                    var productByUser = AppUtil.mapper.map(product,ProductOfHomeListResponse.class );
+                    productByUser.setImageUrl(product.getFiles().get(0).getUrl());
+                    result.add(productByUser);
+                }
+                return result;
+            }
         } else {
             System.out.println("User is not authenticated");
         }
