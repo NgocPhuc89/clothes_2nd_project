@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,6 @@ public class ProductRestController {
         if (page < 0) {
             page = 0;
         }
-
         pageable = PageRequest.of(page, size );
         Page<ProductListResponse>  productListResponses =  productService.findAllWithSearchEveryThingAndPaging(search,pageable);
         return new ResponseEntity<>(productListResponses, HttpStatus.OK);
@@ -70,4 +70,13 @@ public class ProductRestController {
     public Page<ProductOfHomeListResponse> count( Pageable pageable){
         return productHomeService.countProduct(pageable);
     }
+    @GetMapping("/add")
+    public ResponseEntity<?> findProductByCode(@RequestParam(defaultValue = "") String search){
+        return productService.findProductByCodeProduct(search);
+    }
+    @GetMapping("/checkOut")
+    public BigDecimal checkOutProduct(){
+        return productService.checkOut();
+    }
+
 }

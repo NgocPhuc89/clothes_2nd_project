@@ -2,6 +2,7 @@ package com.example.clothes_2nd.service.admin.cart;
 import com.example.clothes_2nd.model.Cart;
 import com.example.clothes_2nd.model.Status;
 import com.example.clothes_2nd.repository.CartRepository;
+import com.example.clothes_2nd.repository.ProductRepository;
 import com.example.clothes_2nd.repository.StatusRepository;
 import com.example.clothes_2nd.service.admin.cart.response.CartAdminResponse;
 import com.example.clothes_2nd.service.admin.cart.response.CartListResponse;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CartService {
     private final CartRepository cartRepository;
-
+    private final ProductRepository productRepository;
     private final StatusRepository statusRepository;
 
 
@@ -94,18 +95,7 @@ public class CartService {
         CartAdminResponse cartAdminResponse = AppUtil.mapper.map(cartUpdate, CartAdminResponse.class);
         return cartAdminResponse;
     }
-//    public List<CartAdminResponse> getAllCartAdmin(){
-//        List<CartAdminResponse> result = new ArrayList<>();
-////        var list = cartRepository.findAll();
-//        for (var item : cartRepository.findAll()){
-//            CartAdminResponse cartAdminResponse = AppUtil.mapper.map(item, CartAdminResponse.class);
-//            List<String> product = (item.getCartDetails().stream()
-//                    .map(e-> e.getProduct().getName()).collect(Collectors.toList()));
-//            cartAdminResponse.setProductNames(product);
-//            result.add(cartAdminResponse);
-//        }
-//        return result;
-//    }
+
     public List<CartAdminResponse> getStatusById(Long id){
     List<CartAdminResponse> result = new ArrayList<>();
     for (var item : cartRepository.findCartByStatusId(id)){
@@ -116,5 +106,7 @@ public class CartService {
         result.add(cartAdminResponse);
     }
     return result;
-}
+    }
+
+
 }

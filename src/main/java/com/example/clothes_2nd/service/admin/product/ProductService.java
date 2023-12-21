@@ -7,6 +7,7 @@ import com.example.clothes_2nd.model.UserInfo;
 import com.example.clothes_2nd.repository.CategoryRepository;
 import com.example.clothes_2nd.repository.FileRepository;
 import com.example.clothes_2nd.repository.UserInfoRepository;
+import com.example.clothes_2nd.service.admin.cart.response.CartAdminResponse;
 import com.example.clothes_2nd.service.admin.product.request.ProductSaveRequest;
 import com.example.clothes_2nd.service.admin.product.request.SelectOptionRequest;
 import com.example.clothes_2nd.service.admin.product.response.ProductListResponse;
@@ -19,13 +20,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -104,7 +110,6 @@ public class ProductService {
         }
     }
 
-
     public ProductListResponse createProducts(ProductSaveRequest request) {
         var newProduct = AppUtil.mapper.map(request, Product.class);
         if (!request.getPhone().isBlank()) {
@@ -121,12 +126,8 @@ public class ProductService {
                 newProduct.setUserInfo(userInfo);
             }
         }
-
         Long categoryId = request.getCategory().getId();
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
-
-
-
         newProduct.setFiles(null);
         newProduct.setCategory(category);
         newProduct.setPaid(false);
@@ -137,7 +138,6 @@ public class ProductService {
         newProduct.setCodeProduct(productCode); // Gán mã sản phẩm vào trường codeProduct
 
         productRepository.save(newProduct);
-
         var images = fileRepository.findAllById(request.getFiles().stream().map(e -> Long.valueOf(e.getId())).collect(Collectors.toList()));
 
         for (var image : images) {
@@ -162,6 +162,7 @@ public class ProductService {
         return categoryInitial + datePart;
     }
 
+
     // Phương thức định dạng ngày tháng năm giờ phút giây
     private String formatDateTime(LocalDateTime dateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
@@ -180,9 +181,6 @@ public class ProductService {
             throw new IllegalArgumentException("Category must not be null or empty");
         }
     }
-
-
-
 
     public ProductListResponse updateProduct(ProductSaveRequest request, Long id) {
         List<File> existingImages = fileRepository.findByProductId(id);
@@ -212,10 +210,22 @@ public class ProductService {
         return productListResponse;
     }
 
-
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
 
+    public ResponseEntity<?>  findProductByCodeProduct(String search){
+        Product product = productRepository.getProductsByCodeProduct(search);
+        if (product.getPaid() == false){
+            ProductListResponse response = AppUtil.mapper.map(product, ProductListResponse.class);
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sản phẩm đã được bán");
+    }
+
+    public BigDecimal checkOut(){
+        BigDecimal checkOut = productRepository.checkOutProduct();
+       return checkOut;
+    }
 
 }

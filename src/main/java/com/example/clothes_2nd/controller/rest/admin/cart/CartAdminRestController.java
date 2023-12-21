@@ -7,7 +7,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +54,7 @@ public class CartAdminRestController {
     @GetMapping("/search")
     public ResponseEntity<?> searchNameAndPhone(@RequestParam(defaultValue = "") String search,
                                                 @RequestParam(defaultValue = "") String statusId,
+                                                @PageableDefault(value = 20,sort = "id", direction = Sort.Direction.DESC)
                                                 Pageable pageable) {
 
         Page<CartAdminResponse> cartAdminResponses = cartService.searchNameAndPhone(search,statusId, pageable);
@@ -70,4 +73,5 @@ public class CartAdminRestController {
     public List<CartAdminResponse> getStatusById(@PathVariable(required = false) Long id){
         return cartService.getStatusById(id);
     }
+
 }

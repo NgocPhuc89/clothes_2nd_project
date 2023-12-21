@@ -24,7 +24,6 @@ public class Product {
     private BigDecimal price;
     private BigDecimal salesPrice;
     private Boolean paid;
-    private BigDecimal productCode;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<File> files;
 

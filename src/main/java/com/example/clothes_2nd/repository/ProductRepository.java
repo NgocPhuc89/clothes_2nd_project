@@ -1,4 +1,5 @@
 package com.example.clothes_2nd.repository;
+import com.example.clothes_2nd.service.admin.product.response.ProductListResponse;
 import com.example.clothes_2nd.service.home.productHome.request.ProductFilterRequest;
 import com.example.clothes_2nd.model.Product;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -46,5 +48,11 @@ Page<Product> filterProduct(@Param("request") ProductFilterRequest request, Page
     @Query(value = "select p from Product as p where p.paid = false")
     Page<Product> countProduct(Pageable pageable);
 
+    //lấy sản phẩm theo mã
+    @Query(value = "select p from Product  p where p.codeProduct = :search")
+    Product getProductsByCodeProduct(@Param("search") String search);
+
+    @Query(value = "select sum(p.price) from  Product  p where p.paid = false ")
+    BigDecimal checkOutProduct();
 
 }

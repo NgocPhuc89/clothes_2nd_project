@@ -37,9 +37,7 @@ public class ProductListResponse {
     private String status;
     private String userInfo;
     private Boolean paid;
-
     private String fullName;
-
     private String phone;
     private String codeProduct;
 }
