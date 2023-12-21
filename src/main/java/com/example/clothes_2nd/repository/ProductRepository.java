@@ -26,7 +26,7 @@ Page<Product> filterProduct(@Param("request") ProductFilterRequest request, Page
 
     @Query("SELECT p FROM Product p WHERE " +
             "(p.name LIKE %:search% OR " +
-            "p.status LIKE %:search%  OR " +
+            "p.codeProduct LIKE %:search%  OR " +
             "p.description LIKE %:search%  OR " +
             "p.category.name LIKE %:search% ) ")
 
