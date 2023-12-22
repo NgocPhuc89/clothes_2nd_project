@@ -1,5 +1,6 @@
 package com.example.clothes_2nd.service.home.userInfoHome;
 
+import com.example.clothes_2nd.model.UserInfo;
 import com.example.clothes_2nd.repository.*;
 import com.example.clothes_2nd.service.currentUsername.CurrentUsername;
 import com.example.clothes_2nd.service.home.cartDetailHome.response.CartDetailHomeByUserResponse;
@@ -35,8 +36,8 @@ public class UserInfoHomeService implements UserDetailsService {
     private final ProductRepository productRepository;
     private final PasswordEncoder passwordEncoder;
     private final StatusRepository statusRepository;
+    private final CurrentUsername currentUsername = new CurrentUsername();
     public UserInfoHomeResponse findByUserInfo() {
-        CurrentUsername currentUsername = new CurrentUsername();
         String email = currentUsername.getCurrentUsername();
             if(email != null){
                 var userInfo = userInfoRepository.findUserInfoByEmail(email);
@@ -50,8 +51,17 @@ public class UserInfoHomeService implements UserDetailsService {
             return null;
     }
 
+    public UserInfo updateUserInfo (UserInfoHomeSaveRequest request){
+        String email = currentUsername.getCurrentUsername();
+        if(email != null){
+            var userInfo = userInfoRepository.findUserInfoByEmail(email);
+            userInfo = AppUtil.mapper.map(request, UserInfo.class);
+            userInfoRepository.save(userInfo);
+        }
+        return null;
+    }
+
     public List<CartHomeByUserResponse> showCartByUser(){
-        CurrentUsername currentUsername = new CurrentUsername();
         String email = currentUsername.getCurrentUsername();
         if (email != null) {
             List<CartHomeByUserResponse> result = new ArrayList<>();
@@ -82,7 +92,6 @@ public class UserInfoHomeService implements UserDetailsService {
     }
 
     public List<ProductOfHomeListResponse> showProductByUser(){
-        CurrentUsername currentUsername = new CurrentUsername();
         String email = currentUsername.getCurrentUsername();
         if (email != null) {
             List<ProductOfHomeListResponse> result = new ArrayList<>();

@@ -30,6 +30,7 @@ public class ProductHomeService {
                         var result = AppUtil.mapper.map(product, ProductOfHomeListResponse.class);
                         result.setImageUrl(product.getFiles().size() > 0 ?
                         product.getFiles().get(0).getUrl() : "");
+                    result.setStatus(product.getStatus().name);
                     return result;
                });
     }
@@ -39,6 +40,7 @@ public class ProductHomeService {
                 .map(e -> {
                     var result = AppUtil.mapper.map(e, ProductDetailHomeResponse.class);
                     result.setListFile(e.getFiles().stream().map(File::getUrl).toList());
+                    result.setStatus(e.getStatus().name);
                     return result;
                 });
     }
@@ -53,6 +55,7 @@ public class ProductHomeService {
                     var result = AppUtil.mapper.map(e, ProductOfHomeListResponse.class);
                     result.setImageUrl(e.getFiles().size() > 0 ?
                             e.getFiles().get(0).getUrl() : "");
+                    result.setStatus(e.getStatus().name);
                     return result;
                 });
     }
