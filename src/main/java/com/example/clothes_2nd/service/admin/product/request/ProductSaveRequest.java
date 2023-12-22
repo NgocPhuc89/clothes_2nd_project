@@ -1,6 +1,7 @@
 package com.example.clothes_2nd.service.admin.product.request;
 
 import com.example.clothes_2nd.model.File;
+import com.example.clothes_2nd.model.UserInfo;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -51,7 +52,7 @@ public class ProductSaveRequest {
     private LocalDateTime depositDate;
 
     private String fullName;
-
+//    private UserInfo userInfo;
     private String phone;
     private String codeProduct;
 }

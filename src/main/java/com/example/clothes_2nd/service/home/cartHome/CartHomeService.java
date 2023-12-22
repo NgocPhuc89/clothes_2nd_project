@@ -1,6 +1,7 @@
 package com.example.clothes_2nd.service.home.cartHome;
 import com.example.clothes_2nd.model.*;
 import com.example.clothes_2nd.repository.*;
+import com.example.clothes_2nd.service.currentUsername.CurrentUsername;
 import com.example.clothes_2nd.service.home.cartDetailHome.request.CartDetailNotLoginSaveRequest;
 import com.example.clothes_2nd.service.home.cartDetailHome.request.CartDetailSaveRequest;
 import com.example.clothes_2nd.service.home.cartDetailHome.response.CartDetailHomeResponse;
@@ -30,63 +31,72 @@ public class CartHomeService {
     private final StatusRepository statusRepository;
 
     public Cart checkOut(CartSaveRequest request) {
-        Cart cart = cartRepository.findByUserInfo_IdAndStatus_Id(1L, 1L)
-                .orElseThrow(() -> new RuntimeException("Chưa có cart"));
-        AppUtil.mapper.map(request, cart);
-        LocationRegion locationRegion = request.getLocationRegion();
-        locationRegion.setUserInfo(cart.getUserInfo());
-        locationRegionRepository.save(locationRegion);
-        List<CartDetail> cartDetails = cartDetailRepository.findCartDetailByCartId(cart.getId());
-        for (CartDetail item : cartDetails) {
-            item.setQuantity(0L);
-            cartDetailRepository.save(item);
-            var optionalProduct = productRepository.findById(item.getProduct().getId());
-            Product product = optionalProduct.get();
-            product.setPaid(true);
-            productRepository.save(product);
-        }
-        cart.setTotalPrice(request.getTotalPrice());
-        cart.setStatus(new Status(2L));
-        cart.setLocationRegion(locationRegion);
-        cartRepository.save(cart);
-        return cart;
-    }
-
-    public Cart addToCart(CartDetailSaveRequest request) {
-        var product = productRepository.findById(request.getId());
-        var userInfo = userInfoRepository.findById(1L);
-
-        CartDetail cartDetail = new CartDetail();
-        cartDetail.setProduct(product.get());
-        cartDetail.setQuantity(1L);
-        cartDetail.setPrice(product.orElseThrow().getPrice());
-        cartDetail.setTotal(cartDetail.getPrice());
-
-        Cart cart = cartRepository.findByUserInfo_IdAndStatus_Id(1L, 1L)
-                .orElseGet(() -> {
-                    Cart newCart = new Cart();
-                    cartDetail.setCart(newCart);
-                    newCart.setUserInfo(userInfo.get());
-                    newCart.setStatus(statusRepository.findAll().get(0));
-                    List<CartDetail> cartDetails = new ArrayList<>();
-                    cartDetails.add(cartDetail);
-                    newCart.setTotalPrice(cartDetail.getTotal());
-                    newCart.setCartDetails(cartDetails);
-                    newCart = cartRepository.save(newCart);
-                    return newCart;
-                });
-        var check = cartDetailRepository.existsByCart_IdAndProduct_IdAndCart_Status_IdAndQuantity(cart.getId(),
-                product.get().getId(), cart.getStatus().getId(), cartDetail.getQuantity());
-        if (check) {
-            return null;
-        } else {
-            cartDetail.setCart(cart);
-            cartDetailRepository.save(cartDetail);
-            cart.getCartDetails().add(cartDetail);
-            cart.setTotalPrice(cart.getTotalPrice().add(cartDetail.getTotal()));
+        CurrentUsername currentUsername = new CurrentUsername();
+        String email = currentUsername.getCurrentUsername();
+        if(email != null){
+            Cart cart = cartRepository.findByUserInfo_EmailAndStatus_Id(email, 1L)
+                    .orElseThrow(() -> new RuntimeException("Chưa có cart"));
+            AppUtil.mapper.map(request, cart);
+            LocationRegion locationRegion = request.getLocationRegion();
+            locationRegion.setUserInfo(cart.getUserInfo());
+            locationRegionRepository.save(locationRegion);
+            List<CartDetail> cartDetails = cartDetailRepository.findCartDetailByCartId(cart.getId());
+            for (CartDetail item : cartDetails) {
+                item.setQuantity(0L);
+                cartDetailRepository.save(item);
+                var optionalProduct = productRepository.findById(item.getProduct().getId());
+                Product product = optionalProduct.get();
+                product.setPaid(true);
+                productRepository.save(product);
+            }
+            cart.setTotalPrice(request.getTotalPrice());
+            cart.setStatus(new Status(2L));
+            cart.setLocationRegion(locationRegion);
             cartRepository.save(cart);
             return cart;
         }
+    return null;
+    }
+
+    public Cart addToCart(CartDetailSaveRequest request) {
+        CurrentUsername currentUsername = new CurrentUsername();
+        String email = currentUsername.getCurrentUsername();
+        if(email != null){
+            var product = productRepository.findById(request.getId());
+            var userInfo = userInfoRepository.findUserInfoByEmail(email);
+
+            CartDetail cartDetail = new CartDetail();
+            cartDetail.setProduct(product.get());
+            cartDetail.setQuantity(1L);
+            cartDetail.setPrice(product.orElseThrow().getPrice());
+            cartDetail.setTotal(cartDetail.getPrice());
+
+            Cart cart = cartRepository.findByUserInfo_EmailAndStatus_Id(email, 1L)
+                    .orElseGet(() -> {
+                        Cart newCart = new Cart();
+                        cartDetail.setCart(newCart);
+                        newCart.setUserInfo(userInfo);
+                        newCart.setStatus(statusRepository.findAll().get(0));
+                        List<CartDetail> cartDetails = new ArrayList<>();
+                        cartDetails.add(cartDetail);
+                        newCart.setTotalPrice(cartDetail.getTotal());
+                        newCart.setCartDetails(cartDetails);
+                        newCart = cartRepository.save(newCart);
+                        return newCart;
+                    });
+            var check = cartDetailRepository.existsByCart_IdAndProduct_IdAndCart_Status_IdAndQuantity(cart.getId(),
+                    product.get().getId(), cart.getStatus().getId(), cartDetail.getQuantity());
+            if (check) {
+                return null;
+            } else {
+                cartDetail.setCart(cart);
+                cartDetailRepository.save(cartDetail);
+                cart.getCartDetails().add(cartDetail);
+                cartRepository.save(cart);
+                return cart;
+            }
+        }
+    return null;
     }
 
     public CartHomeResponse showCartDetailsNotLogin(CartDetailNotLoginSaveRequest request) {
@@ -130,45 +140,55 @@ public class CartHomeService {
         //find Cart có status Giỏ Hàng, có cái id user;
         // map qua dto
         // trả về
-        var result = new CartHomeResponse();
-        Cart cart = cartRepository.findByUserInfo_IdAndStatus_Id(1L, 1L).orElse(new Cart());
-        if (cart.getCartDetails() == null || cart.getCartDetails().size() == 0) {
+        CurrentUsername currentUsername = new CurrentUsername();
+        String email = currentUsername.getCurrentUsername();
+        if(email != null){
+            var result = new CartHomeResponse();
+            Cart cart = cartRepository.findByUserInfo_EmailAndStatus_Id(email, 1L).orElse(new Cart());
+            if (cart.getCartDetails() == null || cart.getCartDetails().size() == 0) {
+                return result;
+            }
+            for (var cartDetail : cart.getCartDetails()) {
+                if (cartDetail.getQuantity() != 0 && !cartDetail.getProduct().getPaid()) {
+                    var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
+                    productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles().stream().map(File::getUrl).collect(Collectors.toList()));
+                    result.getListCartDetail().add(productDetail);
+                }
+                else {
+                    cartDetail.setQuantity(0L);
+                    cartDetailRepository.save(cartDetail);
+                }
+            }
+            result.setTotal(cart.getTotalPrice());
             return result;
         }
-        for (var cartDetail : cart.getCartDetails()) {
-            if (cartDetail.getQuantity() != 0 && !cartDetail.getProduct().getPaid()) {
-                var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
-                productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles().stream().map(File::getUrl).collect(Collectors.toList()));
-                result.getListCartDetail().add(productDetail);
-            }
-            else {
-                cartDetail.setQuantity(0L);
-                cartDetailRepository.save(cartDetail);
-            }
-        }
-        result.setTotal(cart.getTotalPrice());
-        return result;
+        return null;
     }
 
     public CartHomeResponse removeItem(Long id) {
-        var result = new CartHomeResponse();
-        Cart cart = cartRepository.findByUserInfo_IdAndStatus_Id(1L, 1L).orElse(new Cart());
-        if (cart.getCartDetails() == null || cart.getCartDetails().size() == 0) {
-            return result;
-        }
-        for (var cartDetail : cart.getCartDetails()) {
-            if (cartDetail.getProduct().getId() == id) {
-                cartDetail.setQuantity(0L);
-            }else {
-                if(cartDetail.getQuantity() != 0) {
-                    var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
-                    productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles()
-                            .stream().map(File::getUrl).collect(Collectors.toList()));
-                    result.getListCartDetail().add(productDetail);
+        CurrentUsername currentUsername = new CurrentUsername();
+        String email = currentUsername.getCurrentUsername();
+        if(email != null){
+            var result = new CartHomeResponse();
+            Cart cart = cartRepository.findByUserInfo_EmailAndStatus_Id(email, 1L).orElse(new Cart());
+            if (cart.getCartDetails() == null || cart.getCartDetails().size() == 0) {
+                return result;
+            }
+            for (var cartDetail : cart.getCartDetails()) {
+                if (cartDetail.getProduct().getId() == id) {
+                    cartDetail.setQuantity(0L);
+                }else {
+                    if(cartDetail.getQuantity() != 0) {
+                        var productDetail = AppUtil.mapper.map(cartDetail, CartDetailHomeResponse.class);
+                        productDetail.getProduct().setListFile(cartDetail.getProduct().getFiles()
+                                .stream().map(File::getUrl).collect(Collectors.toList()));
+                        result.getListCartDetail().add(productDetail);
+                    }
                 }
             }
+            return result;
         }
-        return result;
+       return null;
     }
 
 

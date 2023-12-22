@@ -16,13 +16,13 @@ import java.util.List;
 public class UserInfoHomeResController {
     private final UserInfoHomeService userInfoHomeService;
 
-    @PostMapping
-    public UserInfoHomeResponse findByEmail(@RequestBody UserInfoHomeSaveRequest request ){
-        return userInfoHomeService.findByUserInfo(request);
+    @GetMapping
+    public UserInfoHomeResponse findByEmail(){
+        return userInfoHomeService.findByUserInfo();
     }
 
-    @PostMapping("/showCartByUser")
-    public List<CartHomeByUserResponse> showCartByUser(@RequestBody UserInfoHomeSaveRequest request ){
-        return userInfoHomeService.showCartByUser(request);
+    @GetMapping("/showCartByUser")
+    public List<CartHomeByUserResponse> showCartByUser(){
+        return userInfoHomeService.showCartByUser();
     }
 }

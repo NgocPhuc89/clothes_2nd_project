@@ -2,6 +2,7 @@ package com.example.clothes_2nd.controller.rest.admin.cart;
 
 import com.example.clothes_2nd.model.Cart;
 import com.example.clothes_2nd.service.admin.cart.CartService;
+import com.example.clothes_2nd.service.admin.cart.request.CartSaveRequest;
 import com.example.clothes_2nd.service.admin.cart.response.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -72,6 +73,12 @@ public class CartAdminRestController {
     @GetMapping("/status/{id}")
     public List<CartAdminResponse> getStatusById(@PathVariable(required = false) Long id){
         return cartService.getStatusById(id);
+    }
+
+    @PostMapping("/checkOutAdmin")
+    public ResponseEntity<?> checkOutAdmin (@RequestBody CartSaveRequest request) {
+        cartService.checkOutAdmin(request);
+        return ResponseEntity.ok(request);
     }
 
 }

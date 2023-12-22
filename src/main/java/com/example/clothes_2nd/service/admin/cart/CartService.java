@@ -1,9 +1,12 @@
 package com.example.clothes_2nd.service.admin.cart;
 import com.example.clothes_2nd.model.Cart;
+import com.example.clothes_2nd.model.CartDetail;
 import com.example.clothes_2nd.model.Status;
+import com.example.clothes_2nd.repository.CartDetailRepository;
 import com.example.clothes_2nd.repository.CartRepository;
 import com.example.clothes_2nd.repository.ProductRepository;
 import com.example.clothes_2nd.repository.StatusRepository;
+import com.example.clothes_2nd.service.admin.cart.request.CartSaveRequest;
 import com.example.clothes_2nd.service.admin.cart.response.CartAdminResponse;
 import com.example.clothes_2nd.service.admin.cart.response.CartListResponse;
 import com.example.clothes_2nd.service.admin.cart.response.CartQuarterlyResponse;
@@ -14,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +30,7 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final StatusRepository statusRepository;
+    private final CartDetailRepository cartDetailRepository;
 
 
     public List<CartListResponse> ProductsSoldDay(){
@@ -108,5 +113,27 @@ public class CartService {
     return result;
     }
 
+    public void checkOutAdmin (CartSaveRequest request) {
+        var status = statusRepository.findById(2L);
+        Cart cart = new Cart();
+        cart.setStatus(status.get());
+        cartRepository.save(cart);
+        BigDecimal total = BigDecimal.ZERO;
+        List<CartDetail> cartDetails = new ArrayList<>();
+        for(var productId : request.getProductIds()){
+            var product = productRepository.findById(productId);
+            var cartDetail = AppUtil.mapper.map(product, CartDetail.class);
+            cartDetail.setProduct(product.get());
+            cartDetail.getProduct().setPaid(true);
+            cartDetail.setCart(cart);
+            cartDetail.setQuantity(1L);
+            cartDetail.setTotal(product.get().getPrice());
+            cartDetails.add(cartDetail);
+            total = total.add(product.get().getPrice());
+        }
+        cartDetailRepository.saveAll(cartDetails);
+        cart.setTotalPrice(total);
+        cartRepository.save(cart);
+    }
 
 }

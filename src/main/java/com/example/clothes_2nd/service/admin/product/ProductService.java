@@ -13,20 +13,22 @@ import com.example.clothes_2nd.service.admin.product.request.SelectOptionRequest
 import com.example.clothes_2nd.service.admin.product.response.ProductListResponse;
 import com.example.clothes_2nd.repository.ProductRepository;
 import com.example.clothes_2nd.service.admin.user.UserInfoService;
-import com.example.clothes_2nd.service.admin.user.requets.UserInfoSaveRequest;
 import com.example.clothes_2nd.util.AppUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+
+import org.springframework.stereotype.Service;
+
+import java.io.DataInput;
 import java.text.Normalizer;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -34,9 +36,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.springframework.data.domain.Sort;
-
 
 @Service
 @AllArgsConstructor
@@ -72,11 +71,11 @@ public class ProductService {
             Product product = optionalProduct.get();
             ProductListResponse productListResponse = AppUtil.mapper.map(product, ProductListResponse.class);
             productListResponse.setSize(product.getSize());
-            productListResponse.setPhone(product.getUserInfo().getPhone());
-            productListResponse.setFullName(product.getUserInfo().getFullName());
-//            productListResponse.setUserInfo(product.getUserInfo().getPhone());
+            productListResponse.setPhone(product.getUserInfo() != null ? product.getUserInfo().getPhone() : null);
+            productListResponse.setFullName(product.getUserInfo() != null ? product.getUserInfo().getFullName() : null);
 
-            // Lấy Category của Product
+
+
             Category productCategory = product.getCategory();
 
             if (productCategory != null) {
@@ -155,7 +154,6 @@ public class ProductService {
     }
 
     // Phương thức tạo mã sản phẩm từ chữ cái đầu của category và ngày tháng năm
-    // Phương thức tạo mã sản phẩm từ chữ cái đầu của category và ngày tháng năm
     private String generateProductCode(Category category, LocalDateTime depositDate) {
         String categoryInitial = getCategoryInitial(category.getName());
         String datePart = formatDateTime(depositDate);
@@ -164,25 +162,29 @@ public class ProductService {
 
 
     // Phương thức định dạng ngày tháng năm giờ phút giây
+
+    // Phương thức định dạng ngày tháng năm giờ phút giây (và mili giây)
+
     private String formatDateTime(LocalDateTime dateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
         return Normalizer.normalize(dateTime.format(formatter), Normalizer.Form.NFD)
                 .replaceAll("[^\\p{ASCII}]", "");
     }
-
 
     // Phương thức lấy chữ cái đầu của category (viết thường) mà không lấy dấu
     private String getCategoryInitial(String category) {
         if (category != null && !category.isEmpty()) {
             String normalizedCategory = Normalizer.normalize(category, Normalizer.Form.NFD);
-            // Loại bỏ dấu diacritic và chuyển về chữ thường
-            return normalizedCategory.replaceAll("[^\\p{ASCII}]", "").substring(0, 1).toLowerCase();
+            // Loại bỏ dấu diacritic và chuyển về chữ hoa
+            return normalizedCategory.replaceAll("[^\\p{ASCII}]", "").substring(0, 1).toUpperCase();
         } else {
             throw new IllegalArgumentException("Category must not be null or empty");
         }
     }
 
     public ProductListResponse updateProduct(ProductSaveRequest request, Long id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Product ID not valid"));
+
         List<File> existingImages = fileRepository.findByProductId(id);
         for (File existingImage : existingImages) {
             existingImage.setProduct(null);
@@ -194,9 +196,10 @@ public class ProductService {
         Category category = categoryRepository.findById(categoryId).get();
         updatedProduct.setId(id);
         updatedProduct.setFiles(null);
-        updatedProduct.setPaid(false);
-        updatedProduct.setDepositDate(LocalDateTime.now());
+        updatedProduct.setUserInfo(product.getUserInfo());
         updatedProduct.setCategory(category);
+        updatedProduct.setDepositDate(request.getDepositDate());
+        updatedProduct.setCodeProduct(request.getCodeProduct());
         productRepository.save(updatedProduct);
 
         List<File> images = fileRepository.findAllById(request.getFiles().stream().map(e -> Long.valueOf(e.getId())).collect(Collectors.toList()));
@@ -204,8 +207,14 @@ public class ProductService {
             image.setProduct(updatedProduct);
         }
         fileRepository.saveAll(images);
+
         ProductListResponse productListResponse = AppUtil.mapper.map(updatedProduct, ProductListResponse.class);
+
         productListResponse.setCategory(updatedProduct.getCategory().getName());
+        if (!productListResponse.getPhone().isBlank()) {
+            productListResponse.setFullName(updatedProduct.getUserInfo().getFullName());
+        }
+
 
         return productListResponse;
     }

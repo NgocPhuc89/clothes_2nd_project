@@ -169,11 +169,10 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
 
     boolean existsByEmailIgnoreCase(String email);
 
-    Boolean existsByPhone(String phone);
+    boolean existsByPhone(String phone);
 
     UserInfo findUserInfoByEmail(String email);
 
     Optional<UserInfo> findByPhone(String phone);
-
 
 }

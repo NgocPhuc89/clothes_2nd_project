@@ -17,6 +17,7 @@ public class ProductOfHomeListResponse {
     private Long id;
     private String name;
     private BigDecimal price;
+    private String description;
     private Size size;
     private String imageUrl;
     private String status;

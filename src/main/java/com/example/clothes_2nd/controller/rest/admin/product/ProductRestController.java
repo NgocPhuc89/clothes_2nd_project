@@ -1,6 +1,4 @@
 package com.example.clothes_2nd.controller.rest.admin.product;
-
-
 import com.example.clothes_2nd.model.Product;
 import com.example.clothes_2nd.service.admin.product.request.ProductSaveRequest;
 import com.example.clothes_2nd.service.admin.product.response.ProductListResponse;
@@ -30,17 +28,9 @@ public class ProductRestController {
     private ProductHomeService productHomeService;
     private final ProductService productService;
 
-
     @GetMapping
-    public ResponseEntity<?> getAllProducts(@RequestParam(defaultValue = "") String search,
-                                            @RequestParam(defaultValue = "0") int page,
-                                            @RequestParam(defaultValue = "10") int size
+    public ResponseEntity<?> getAllProducts(@RequestParam(defaultValue = "") String search,Pageable pageable
                                             ) {
-        Pageable pageable;
-        if (page < 0) {
-            page = 0;
-        }
-        pageable = PageRequest.of(page, size );
         Page<ProductListResponse>  productListResponses =  productService.findAllWithSearchEveryThingAndPaging(search,pageable);
         return new ResponseEntity<>(productListResponses, HttpStatus.OK);
     }
@@ -55,7 +45,7 @@ public class ProductRestController {
 
         return new ResponseEntity<>(productListResponse, HttpStatus.CREATED);
     }
-    @PutMapping ("/{id}")
+    @PatchMapping ("/{id}")
     public ResponseEntity<?> updateProduct(@RequestBody ProductSaveRequest request, @PathVariable Long id) {
         ProductListResponse productListResponse =   productService.updateProduct(request,id);
         return new ResponseEntity<>(productListResponse, HttpStatus.OK);

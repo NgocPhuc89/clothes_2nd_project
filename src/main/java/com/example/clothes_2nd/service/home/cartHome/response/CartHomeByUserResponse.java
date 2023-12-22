@@ -1,6 +1,8 @@
 package com.example.clothes_2nd.service.home.cartHome.response;
 
 import com.example.clothes_2nd.model.Product;
+import com.example.clothes_2nd.model.Status;
+import com.example.clothes_2nd.service.home.cartDetailHome.response.CartDetailHomeByUserResponse;
 import com.example.clothes_2nd.service.home.cartDetailHome.response.CartDetailHomeResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,8 +21,10 @@ import java.util.List;
 public class CartHomeByUserResponse {
     private String name;
     private BigDecimal totalPrice ;
+    private BigDecimal totalCart ;
     private LocalDate orderDate ;
     private String phone;
     private BigDecimal shippingFee;
-    private List<CartDetailHomeResponse> cartDetailList = new ArrayList<>();
+    private Long statusId;
+    private List<CartDetailHomeByUserResponse> cartDetailList = new ArrayList<>();
 }
