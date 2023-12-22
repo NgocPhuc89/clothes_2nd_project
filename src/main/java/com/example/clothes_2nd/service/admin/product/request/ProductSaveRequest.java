@@ -23,27 +23,25 @@ import java.util.List;
 @Getter
 @Setter
 public class ProductSaveRequest {
-    @NotBlank(message = "Tên sản phẩm không được để trống")
+
     private String name;
 
-    @NotBlank(message = "Mô tả không được để trống")
+
     private String description;
 
-    @NotNull(message = "Giá không được để trống")
-    @DecimalMin(value = "0.00", message = "Giá phải lớn hơn hoặc bằng 0")
+
     private BigDecimal price;
 
-    @NotBlank(message = "Tình trạng không được để trống")
+
     private String status;
 
-    @NotBlank(message = "Kích thước không được để trống")
+
     private String size;
 
-    @Valid
-    @NotEmpty(message = "Danh sách loại không được rỗng")
+
     private SelectOptionRequest category;
 
-    @NotEmpty(message = "Danh sách tệp không được rỗng")
+
     private List<@Valid SelectOptionRequest> files;
     private Boolean paid;
 //    private SelectOptionRequest userInfo;

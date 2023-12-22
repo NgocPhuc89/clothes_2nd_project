@@ -55,7 +55,7 @@ public class UserInfoHomeService implements UserDetailsService {
         String email = currentUsername.getCurrentUsername();
         if(email != null){
             var userInfo = userInfoRepository.findUserInfoByEmail(email);
-            userInfo = AppUtil.mapper.map(request, UserInfo.class);
+            AppUtil.mapper.map(request, userInfo);
             userInfoRepository.save(userInfo);
         }
         return null;

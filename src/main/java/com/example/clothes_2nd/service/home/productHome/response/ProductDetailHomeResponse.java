@@ -17,7 +17,7 @@ import java.util.List;
 public class ProductDetailHomeResponse {
     private Long id;
     private String name;
-    private BigDecimal price;
+    private BigDecimal salesPrice;
     private String description;
     private Size size;
     private List<String> listFile;

@@ -60,10 +60,7 @@ public class ProductHomeService {
                 });
     }
 
-    public Page<ProductOfHomeListResponse> countProduct(Pageable pageable){
-        return productRepository.countProduct(pageable).map(e -> {
-            var result = AppUtil.mapper.map(e, ProductOfHomeListResponse.class);
-            return result;
-        });
+    public Long countProduct(){
+        return productRepository.countProduct();
     }
 }

@@ -33,7 +33,7 @@ public class UserInfoHomeResController {
         return userInfoHomeService.showProductByUser();
     }
 
-    @PostMapping
+    @PatchMapping
     public UserInfo updateUserInfo(@RequestBody UserInfoHomeSaveRequest request){
         return userInfoHomeService.updateUserInfo(request);
     }

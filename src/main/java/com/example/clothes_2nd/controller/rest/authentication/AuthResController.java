@@ -108,6 +108,8 @@ public class AuthResController {
 
             User user = new User();
             user.setRole(Role.ROLE_USER);
+            user.setUsername(request.getEmail());
+            user.setPassword(passwordEncoder.encode(request.getEmail()));
             user.setAvatar(file);
             userRepository.save(user);
 

@@ -45,7 +45,7 @@ public class ProductRestController {
 
         return new ResponseEntity<>(productListResponse, HttpStatus.CREATED);
     }
-    @PatchMapping ("/{id}")
+    @PutMapping ("/{id}")
     public ResponseEntity<?> updateProduct(@RequestBody ProductSaveRequest request, @PathVariable Long id) {
         ProductListResponse productListResponse =   productService.updateProduct(request,id);
         return new ResponseEntity<>(productListResponse, HttpStatus.OK);
@@ -57,8 +57,8 @@ public class ProductRestController {
         return new ResponseEntity<>( HttpStatus.OK);
     }
     @GetMapping("/count")
-    public Page<ProductOfHomeListResponse> count( Pageable pageable){
-        return productHomeService.countProduct(pageable);
+    public ResponseEntity<?> count(){
+        return new ResponseEntity<>(productHomeService.countProduct(), HttpStatus.OK);
     }
     @GetMapping("/add")
     public ResponseEntity<?> findProductByCode(@RequestParam(defaultValue = "") String search){

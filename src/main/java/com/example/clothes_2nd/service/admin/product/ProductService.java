@@ -211,9 +211,9 @@ public class ProductService {
         ProductListResponse productListResponse = AppUtil.mapper.map(updatedProduct, ProductListResponse.class);
 
         productListResponse.setCategory(updatedProduct.getCategory().getName());
-        if (!productListResponse.getPhone().isBlank()) {
+//        if (!productListResponse.getPhone().isBlank()) {
             productListResponse.setFullName(updatedProduct.getUserInfo().getFullName());
-        }
+//        }
 
 
         return productListResponse;

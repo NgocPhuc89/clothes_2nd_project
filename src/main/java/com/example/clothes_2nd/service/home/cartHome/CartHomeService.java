@@ -66,7 +66,7 @@ public class CartHomeService {
             CartDetail cartDetail = new CartDetail();
             cartDetail.setProduct(product.get());
             cartDetail.setQuantity(1L);
-            cartDetail.setPrice(product.orElseThrow().getPrice());
+            cartDetail.setPrice(product.orElseThrow().getSalesPrice());
             cartDetail.setTotal(cartDetail.getPrice());
 
             Cart cart = cartRepository.findByUserInfo_EmailAndStatus_Id(email, 1L)
@@ -103,7 +103,7 @@ public class CartHomeService {
             var cartDetail = new CartDetailHomeResponse();
             var product = productRepository.findById(id).get();
             cartDetail.setQuantity(1L);
-            cartDetail.setTotal(product.getPrice());
+            cartDetail.setTotal(product.getSalesPrice());
 
             ProductDetailHomeResponse productDetailHome = AppUtil.mapper.map(product, ProductDetailHomeResponse.class);
             productDetailHome.setListFile(product.getFiles().stream().map(e -> e.getUrl()).collect(Collectors.toList()));
@@ -127,7 +127,7 @@ public class CartHomeService {
                 cartDetail.getProduct().setPaid(true);
                 cartDetail.setCart(cart);
                 cartDetail.setQuantity(1L);
-                cartDetail.setTotal(product.get().getPrice());
+                cartDetail.setTotal(product.get().getSalesPrice());
                 cartDetails.add(cartDetail);
             }
             cartDetailRepository.saveAll(cartDetails);

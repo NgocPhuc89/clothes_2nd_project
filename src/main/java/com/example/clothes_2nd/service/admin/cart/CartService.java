@@ -44,10 +44,10 @@ public class CartService {
 
     //tính doanh thu ngày hôm nay so với hôm qua
     public Float PercentTheDay(){
-        Float totalToday = cartRepository.percentTheDay();
-        Float totalYesterday = cartRepository.percentYesterday();
+        float totalToday = cartRepository.percentTheDay() == null ? 1 :cartRepository.percentTheDay();
+        float totalYesterday = cartRepository.percentYesterday()== null ? 1 :cartRepository.percentYesterday();
 
-            return ((totalToday - totalYesterday) / totalYesterday) * 100;
+        return ((totalToday - totalYesterday) / totalYesterday) * 100;
         }
 
 //    tính doanh thu theo quý
@@ -114,7 +114,7 @@ public class CartService {
     }
 
     public void checkOutAdmin (CartSaveRequest request) {
-        var status = statusRepository.findById(2L);
+        var status = statusRepository.findById(5L);
         Cart cart = new Cart();
         cart.setStatus(status.get());
         cartRepository.save(cart);

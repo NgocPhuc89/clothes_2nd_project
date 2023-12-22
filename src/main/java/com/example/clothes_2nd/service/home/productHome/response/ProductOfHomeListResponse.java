@@ -16,7 +16,9 @@ import java.math.BigDecimal;
 public class ProductOfHomeListResponse {
     private Long id;
     private String name;
-    private BigDecimal price;
+    private BigDecimal salesPrice;
+    private BigDecimal price ;
+
     private String description;
     private Size size;
     private String imageUrl;

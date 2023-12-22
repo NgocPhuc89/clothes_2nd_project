@@ -21,8 +21,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 @Query(value = "SELECT p FROM Product p  WHERE " +
         "(:#{#request.sizes} is null or  p.size in :#{#request.sizes}) " +
         "AND (COALESCE(:#{#request.categoryId}, p.category.id) = p.category.id) " +
-        "AND (COALESCE(:#{#request.priceMin}, p.price) <= p.price) " +
-        "AND (COALESCE(:#{#request.priceMax}, p.price) >= p.price) " +
+        "AND (COALESCE(:#{#request.priceMin}, p.salesPrice) <= p.salesPrice) " +
+        "AND (COALESCE(:#{#request.priceMax}, p.salesPrice) >= p.salesPrice) " +
         "AND p.name LIKE CONCAT('%', :#{#request.search}, '%') " +
         "AND p.paid = false AND SIZE(p.files) > 0")
 Page<Product> filterProduct(@Param("request") ProductFilterRequest request, Pageable pageable);
@@ -43,8 +43,8 @@ Page<Product> filterProduct(@Param("request") ProductFilterRequest request, Page
 
 
 //    đếm số lượng sản phẩm
-    @Query(value = "select p from Product as p where p.paid = false")
-    Page<Product> countProduct(Pageable pageable);
+    @Query(value = "select COUNT(p) from Product as p where p.paid = false")
+    long countProduct();
 
     //lấy sản phẩm theo mã
     @Query(value = "select p from Product  p where p.codeProduct = :search")
