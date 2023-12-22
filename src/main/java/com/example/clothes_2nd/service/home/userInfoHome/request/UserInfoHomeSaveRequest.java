@@ -11,4 +11,7 @@ import lombok.Setter;
 @Setter
 public class UserInfoHomeSaveRequest {
     private String email;
+    private String fullName;
+    private String phone;
+    private String gender;
 }

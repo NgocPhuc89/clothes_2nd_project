@@ -34,15 +34,13 @@ public class SpringSecurity {
         http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(authorize ->
                 authorize.requestMatchers("/api/home/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-//                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
+
                         .requestMatchers("/api/admin/**").permitAll()
+
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
-
-
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {

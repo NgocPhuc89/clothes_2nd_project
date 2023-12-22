@@ -29,9 +29,8 @@ public class CartHomeService {
     private final ProductRepository productRepository;
     private final CartDetailRepository cartDetailRepository;
     private final StatusRepository statusRepository;
-
+    private final CurrentUsername currentUsername = new CurrentUsername();
     public Cart checkOut(CartSaveRequest request) {
-        CurrentUsername currentUsername = new CurrentUsername();
         String email = currentUsername.getCurrentUsername();
         if(email != null){
             Cart cart = cartRepository.findByUserInfo_EmailAndStatus_Id(email, 1L)
@@ -59,7 +58,6 @@ public class CartHomeService {
     }
 
     public Cart addToCart(CartDetailSaveRequest request) {
-        CurrentUsername currentUsername = new CurrentUsername();
         String email = currentUsername.getCurrentUsername();
         if(email != null){
             var product = productRepository.findById(request.getId());
@@ -113,7 +111,6 @@ public class CartHomeService {
             cartDetail.setProduct(productDetailHome);
             result.getListCartDetail().add(cartDetail);
         }
-
         return result;
     }
 
@@ -137,10 +134,6 @@ public class CartHomeService {
     }
 
     public CartHomeResponse findAllByUser() {
-        //find Cart có status Giỏ Hàng, có cái id user;
-        // map qua dto
-        // trả về
-        CurrentUsername currentUsername = new CurrentUsername();
         String email = currentUsername.getCurrentUsername();
         if(email != null){
             var result = new CartHomeResponse();
@@ -159,7 +152,8 @@ public class CartHomeService {
                     cartDetailRepository.save(cartDetail);
                 }
             }
-            result.setTotal(cart.getTotalPrice());
+            result.setUsername(cart.getUserInfo().getUser().getUsername());
+            result.setPhone(cart.getUserInfo().getPhone());
             return result;
         }
         return null;

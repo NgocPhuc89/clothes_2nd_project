@@ -16,5 +16,7 @@ import java.util.List;
 @Setter
 public class CartHomeResponse {
     private BigDecimal total = BigDecimal.ZERO;
+    private String username;
+    private String phone;
     private List<CartDetailHomeResponse> listCartDetail = new ArrayList<>();
 }

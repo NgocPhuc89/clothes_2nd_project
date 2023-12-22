@@ -1,6 +1,9 @@
 package com.example.clothes_2nd.controller.rest.authentication;
 
+
 import com.example.clothes_2nd.config.JwtUtil;
+
+import com.example.clothes_2nd.controller.rest.authentication.response.AuthResponse;
 import com.example.clothes_2nd.model.File;
 import com.example.clothes_2nd.model.User;
 import com.example.clothes_2nd.model.UserInfo;
@@ -33,8 +36,7 @@ import java.security.Key;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static com.example.clothes_2nd.model.emun.FileType.IMAGE;
+import static com.example.clothes_2nd.model.emun.Role.ROLE_ADMIN;
 import static com.example.clothes_2nd.model.emun.Role.ROLE_USER;
 
 
@@ -75,18 +77,24 @@ public class AuthResController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody UserSaveRequest request) {
-        //trả ra được JWT
         var user = userRepository.findByUsername(request.getUsername());
         var userInfo = userInfoRepository.findUserInfoByUserId(user.get().getId());
-        if(user.isPresent()){
+
+        if (user.isPresent()) {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            if (passwordEncoder.matches(request.getPassword(), user.get().getPassword())){
+            if (passwordEncoder.matches(request.getPassword(), user.get().getPassword())) {
                 String token = jwtToken(userInfo.get().getEmail());
-                return ResponseEntity.ok(token);
+                AuthResponse authResponse = new AuthResponse();
+                authResponse.setJwt(token);
+                authResponse.setIsAdmin(user.get().getRole().equals(ROLE_ADMIN));
+                return ResponseEntity.ok(authResponse);
             }
         }
+
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Tên Đăng Nhập Hoặc Mật Khẩu Không Đúng");
     }
+
+
 
     @PostMapping("/loginGoogle")
     public ResponseEntity<?> loginGoogle(@RequestBody LoginGoogleSaveRequest request){
@@ -135,6 +143,8 @@ public class AuthResController {
                 )
         );
 
+
         return jwtUtil.generateToken(email, ROLE_USER.toString());
     }
+
 }

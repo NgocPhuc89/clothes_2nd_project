@@ -13,16 +13,18 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-@Query(value = "SELECT p FROM Product p WHERE " +
+@Query(value = "SELECT p FROM Product p  WHERE " +
         "(:#{#request.sizes} is null or  p.size in :#{#request.sizes}) " +
         "AND (COALESCE(:#{#request.categoryId}, p.category.id) = p.category.id) " +
         "AND (COALESCE(:#{#request.priceMin}, p.price) <= p.price) " +
         "AND (COALESCE(:#{#request.priceMax}, p.price) >= p.price) " +
-        "AND p.name LIKE CONCAT('%', :#{#request.search}, '%')")
+        "AND p.name LIKE CONCAT('%', :#{#request.search}, '%') " +
+        "AND p.paid = false AND SIZE(p.files) > 0")
 Page<Product> filterProduct(@Param("request") ProductFilterRequest request, Pageable pageable);
 
 
@@ -51,4 +53,5 @@ Page<Product> filterProduct(@Param("request") ProductFilterRequest request, Page
     @Query(value = "select sum(p.price) from  Product  p where p.paid = false ")
     BigDecimal checkOutProduct();
 
+   List<Product>  findProductByUserInfoId(Long userInfo_id);
 }
